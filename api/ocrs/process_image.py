@@ -147,8 +147,10 @@ def get_gray_and_bw_image(filepath):
 
 # extract table from the image
 def extract_tables(filepath, output_dir):
-    image, image_processed = extract_boxes_from_image(filepath)
-    _, contours, hierarchy = cv2.findContours(image_processed, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    image, image_processed  = extract_boxes_from_image(filepath)
+    contours                = cv2.findContours(image_processed, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours                = contours[0] if len(contours) == 2 else contours[1]
+
     (contours, boundingBoxes) = sort_contours(contours, method='top-to-bottom')
 
     cont_ind = 0
@@ -167,7 +169,9 @@ def extract_tables(filepath, output_dir):
 def extract_table_boxes(filepath, output_dir, num_cols=5):
     image, image_processed = extract_boxes_from_image(filepath)
     # Find contours for image, which will detect all the boxes
-    _, contours, hierarchy = cv2.findContours(image_processed, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours                = cv2.findContours(image_processed, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours                = contours[0] if len(contours) == 2 else contours[1]
+
     # Sort all the contours by top to bottom.
     (contours, boundingBoxes) = sort_contours(contours, method='top-to-bottom')
     
@@ -187,7 +191,9 @@ def extract_table_boxes(filepath, output_dir, num_cols=5):
 def extract_box_letters(filepath, output_dir):    
     gray_img, bw_img = get_gray_and_bw_image(filepath)
     # find contours and get the external one
-    _, contours, hier = cv2.findContours(bw_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours                = cv2.findContours(image_processed, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours                = contours[0] if len(contours) == 2 else contours[1]
+    
     # Sort all the contours by top to bottom.
     (contours, boundingBoxes) = sort_contours(contours, method='left-to-right')
         
