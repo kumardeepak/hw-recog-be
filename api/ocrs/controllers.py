@@ -5,7 +5,7 @@ import os
 
 controllers = Blueprint('controllers', __name__)
 workspace_dir       = '/home/ubuntu/workspace/output'
-input_dir           = '/tmp/ngnix'
+input_dir           = '/tmp/nginx'
 
 @controllers.route('/process', methods=['POST'])
 def process_ocr():
