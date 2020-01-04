@@ -191,9 +191,8 @@ def extract_table_boxes(filepath, output_dir, num_cols=5):
 def extract_box_letters(filepath, output_dir):    
     gray_img, bw_img = get_gray_and_bw_image(filepath)
     # find contours and get the external one
-    contours                = cv2.findContours(image_processed, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours                = cv2.findContours(bw_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     contours                = contours[0] if len(contours) == 2 else contours[1]
-    
     # Sort all the contours by top to bottom.
     (contours, boundingBoxes) = sort_contours(contours, method='left-to-right')
         
