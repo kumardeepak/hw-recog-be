@@ -4,7 +4,7 @@ from api.ocrs.process_image import process_image_with_vision
 import os
 
 controllers = Blueprint('controllers', __name__)
-workspace_dir       = '/Users/kd/Workspace/python/github/handwriting-recognition'
+workspace_dir       = '/home/ubuntu/workspace/output'
 input_dir           = '/tmp/ngnix'
 
 @controllers.route('/process', methods=['POST'])
