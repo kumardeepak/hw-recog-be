@@ -188,7 +188,7 @@ def extract_tables(filepath, output_dir):
     for index, contour in enumerate(contours):
         x, y, w, h = cv2.boundingRect(contour)
         if (w*h > 200000) and (w*h < 800000):
-            filename = os.path.join(output_dir, str(int(cont_ind/len(contours))) + "_" + str(int(cont_ind%len(contours))) + "_" + os.path.basename(filepath) + (".jpg" if (len(os.path.splitext(os.path.basename(input_filepath))) == 1) else ""))
+            filename = os.path.join(output_dir, str(int(cont_ind/len(contours))) + "_" + str(int(cont_ind%len(contours))) + "_" + os.path.basename(filepath) + (".jpg" if (len(os.path.splitext(os.path.basename(filepath))) == 1) else ""))
             crop_img = image[y:y+h, x:x+w]
             cv2.imwrite(filename, crop_img)
             cont_ind = cont_ind + 1
@@ -219,7 +219,7 @@ def process_table_image(hori_filtered_lines, vert_filtered_lines, filepath, outp
     
     for row in range(len(hori_filtered_lines) - 1):
         for col in range(len(vert_filtered_lines) - 1):
-            filename = os.path.join(output_dir, str(row) + "_" + str(col)+"_"+os.path.basename(filepath) + (".jpg" if (len(os.path.splitext(os.path.basename(input_filepath))) == 1) else ""))
+            filename = os.path.join(output_dir, str(row) + "_" + str(col)+"_"+os.path.basename(filepath) + (".jpg" if (len(os.path.splitext(os.path.basename(filepath))) == 1) else ""))
             crop_img = image[hori_filtered_lines[row][1]:hori_filtered_lines[row+1][1], vert_filtered_lines[col][0]:vert_filtered_lines[col+1][0]]
             cv2.imwrite(filename, crop_img)
             rsp['data'].append({
