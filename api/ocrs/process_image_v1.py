@@ -244,7 +244,7 @@ def api_response(code, message, response=None):
     return rsp
     
 
-def process_image(input_filepath, workspace_dir):
+def process_image_v1(input_filepath, workspace_dir):
     input_filename  = os.path.splitext(os.path.basename(input_filepath))[0]
 
     img_filename    = os.path.join(workspace_dir, data_dir, input_data_dir, input_filename)
@@ -293,5 +293,5 @@ def process_image(input_filepath, workspace_dir):
 
 # input_filepath               = '/Users/kd/Workspace/python/github/handwriting-recognition/data/input/sample_input_02.jpg'
 # base_dir                     = '/Users/kd/Workspace/python/github/handwriting-recognition'
-# proceed_rsp                  = process_image(input_filepath, base_dir)
+# proceed_rsp                  = process_image_v1(input_filepath, base_dir)
 # print(proceed_rsp)
