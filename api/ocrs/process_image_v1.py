@@ -269,12 +269,6 @@ def process_image_v1(input_filepath, workspace_dir):
 
     extract_tables(input_filepath, output_tables_dir)
     table_files = read_directory_files(output_tables_dir)
-    if len(table_files) != 2:
-        if len(table_files) > 2:
-            return api_response(500001, 'We have detected more than two tables, please bring answer sheet near to phone camera')
-        if len(table_files) < 2:
-            return api_response(500001, 'We have detected less than two tables, please bring answer sheet bit-far from phone camera')
-
     boxes_response = []
 
     for table_file in table_files:
@@ -284,12 +278,15 @@ def process_image_v1(input_filepath, workspace_dir):
 
         org_img1, _, img, hori_filtered_contours, hori_filtered_lines     = extract_horizontal_lines(table_file, debug=False)
         org_img2, _, img, vert_filtered_contours, vert_filtered_lines     = extract_vertical_lines(table_file, debug=False)
-        boxes_response.append(process_table_image(hori_filtered_lines, vert_filtered_lines, table_file, output_dir))
+        if (len(hori_filtered_lines) == 12 and len(vert_filtered_lines) == 6) or (len(hori_filtered_lines) == 8 and len(vert_filtered_lines) == 3):
+            boxes_response.append(process_table_image(hori_filtered_lines, vert_filtered_lines, table_file, output_dir))
 
-    if len(boxes_response) != 2:
-        return api_response(500001, 'Please improve quality of photo that you are taking by improving lighting conditions')
+    if len(boxes_response) > 2:
+        return api_response(500001, 'We have detected more than two tables, please bring answer sheet near to phone camera')
+    if len(boxes_response) == 0:
+        return api_response(500001, 'We could not detect any table, please bring answer sheet bit-far from phone camera')
+    
     return api_response(200, 'successfully processed the image', boxes_response)
-
 
 # input_filepath               = '/Users/kd/Workspace/python/github/handwriting-recognition/data/input/0061018187'
 # base_dir                     = '/Users/kd/Workspace/python/github/handwriting-recognition'
