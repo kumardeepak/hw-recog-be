@@ -39,6 +39,16 @@ def extract_in_all_detection(text, pattern):
         return found.group()
     return ''
 
+def normalize_tin(text):
+    return re.sub(r'(?i)(TIN)(\s)?(NO)?(\s)?(:)?(\s)?', '', text.strip())
+
+def normalize_gst(text):
+    return re.sub(r'(?i)(GSTIN)(#)?(\s)?(NO)?(\s)?(:)?(\s)?', '', text.strip())
+
+def normalize_price(text):
+    return re.sub(r'(?i)(TOTAL)(\s)?(INVOICE)?(\s)?(RS|INR)?(.|\s)?(\s)?', '', text.strip())
+
+
 def api_response(code, message, response=None):
     rsp = {
             "status": {
@@ -60,15 +70,15 @@ def process_invoice_v1(input_filepath, workspace_dir=None):
     texts           = ocred_text.split('\n')
 
 
-    tin             = extract_in_individual_detection(texts, tin_pattern)
-    gst             = extract_in_individual_detection(texts, gst_pattern)
+    tin             = normalize_tin(extract_in_individual_detection(texts, tin_pattern))
+    gst             = normalize_gst(extract_in_individual_detection(texts, gst_pattern))
     date            = extract_in_individual_detection(texts, date_pattern)
 
     bill            = extract_in_individual_detection(texts, bill1_pattern)
     if len(bill) == 0:
         bill        = extract_in_individual_detection(texts, bill2_pattern)
     
-    price           = extract_in_all_detection(' '.join(texts), price_pattern)
+    price           = normalize_price(extract_in_all_detection(' '.join(texts), price_pattern))
 
     return api_response(200, 'successfully processed', {'tin': tin, 'gst': gst, 'date': date, 'bill': bill, 'price': price})
 
