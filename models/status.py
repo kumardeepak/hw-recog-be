@@ -15,7 +15,9 @@ class Status(enum.Enum):
     DATA_NOT_FOUND = {'ok': False,'http':{'status':404},
                 'why':'data not found'}
     WRONG_CODE = {'ok': False,'http':{'status':501},
-                'why':'wrong code supplied'}
+                'why':'WRONG_EXAM_ID'}
+    WRONG_STUDENT_CODE = {'ok': False,'http':{'status':501},
+                'why':'WRONG_STUDENT_ID'}
     OPERATION_NOT_PERMITTED = {'ok': False, 'http': {'status': 400},
                                'why': 'operation not permitted'}
     ERROR_WEAK_PASSWORD = {'ok': False, 'http': {'status': 400}, 'why': 'weak password, at least provide 6 characters '}

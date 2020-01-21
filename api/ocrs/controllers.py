@@ -29,7 +29,11 @@ def check_ocr_data():
         return res.getres(), Status.ERR_GLOBAL_MISSING_PARAMETERS.value['http']['status']
     student_fromdb = Student.objects(student_id=body['student_id'])
     exam_fromdb = Exams.objects(exam_id=body['exam_id'])
-    if not (student_fromdb is not None and len(student_fromdb) > 0 and exam_fromdb is not None and len(exam_fromdb) > 0):
+    if not (student_fromdb is not None and len(student_fromdb) > 0):
+        res = CustomResponse(
+            Status.WRONG_STUDENT_CODE.value, None)
+        return res.getres()
+    elif !(exam_fromdb is not None and len(exam_fromdb) > 0):
         res = CustomResponse(
             Status.WRONG_CODE.value, None)
         return res.getres()
