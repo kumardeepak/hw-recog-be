@@ -5,8 +5,10 @@ from api.ocrs.process_image_v1 import process_image_v1
 from api.ocrs.process_invoice_v1 import process_invoice_v1
 
 import json
+import time
 
 from models.exam import Exams
+from models.ocr_data import Ocrdata
 from models.student import Student
 
 from models.response import CustomResponse
@@ -68,6 +70,19 @@ def save_student_masterdata():
     else:
         student = Student(student_id=body['student']['student_id'])
         student.save()
+    res = CustomResponse(Status.SUCCESS.value, None)
+    return res.getres()
+
+
+@controllers.route('/save-ocr-data', methods=['POST'])
+def save_ocr_data():
+    body = request.get_json()
+    if body['ocr_data'] is None:
+        res = CustomResponse(
+            Status.ERR_GLOBAL_MISSING_PARAMETERS.value, None)
+        return res.getres(), Status.ERR_GLOBAL_MISSING_PARAMETERS.value['http']['status']
+    ocr_data = Ocrdata(created_on=str(int(time.time())), data=body['ocr_data']['response'])
+    ocr_data.save()
     res = CustomResponse(Status.SUCCESS.value, None)
     return res.getres()
 
