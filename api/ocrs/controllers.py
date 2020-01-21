@@ -33,7 +33,7 @@ def check_ocr_data():
         res = CustomResponse(
             Status.WRONG_STUDENT_CODE.value, None)
         return res.getres()
-    elif !(exam_fromdb is not None and len(exam_fromdb) > 0):
+    elif not (exam_fromdb is not None and len(exam_fromdb) > 0):
         res = CustomResponse(
             Status.WRONG_CODE.value, None)
         return res.getres()
