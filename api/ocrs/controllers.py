@@ -32,7 +32,7 @@ def check_ocr_data():
     if not (student_fromdb is not None and len(student_fromdb) > 0 and exam_fromdb is not None and len(exam_fromdb) > 0):
         res = CustomResponse(
             Status.WRONG_CODE.value, None)
-        return res.getres(), Status.WRONG_CODE.value['http']['status']
+        return res.getres()
     else:
         try:
             exam_obj = json.loads(exam_fromdb.to_json())
