@@ -38,7 +38,10 @@ def check_ocr_data():
             exam_obj = json.loads(exam_fromdb.to_json())
             map_obj = conver_list_to_map(exam_obj[0]['data'])
             ocr_data = body['ocr_data']
-            for marks_data in ocr_data['response'][0]['data']:
+            table_data = ocr_data['response'][1]['data']
+            if len(ocr_data['response'][0]['data']) > len(ocr_data['response'][1]['data']):
+                table_data = ocr_data['response'][0]['data']
+            for marks_data in table_data:
                 key = str(marks_data['col'])+str(marks_data['row'])
                 if key in map_obj:
                     marks_data['text'] = map_obj[key]
