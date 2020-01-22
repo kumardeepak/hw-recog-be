@@ -105,7 +105,7 @@ def save_exam_masterdata():
     if exam_fromdb is not None and len(exam_fromdb) > 0:
         exam_fromdb.update(set__data=body['exam']['data'])
     else:
-        exam = Exams(exam_id=body['exam']['exam_id'],data=body['exam']['data'])
+        exam = Exams(exam_id=body['exam']['exam_id'],data=body['exam']['data'],exam_date=data=body['exam']['exam_date'])
         exam.save()
     res = CustomResponse(Status.SUCCESS.value, None)
     return res.getres()
