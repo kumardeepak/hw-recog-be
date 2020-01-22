@@ -43,12 +43,19 @@ def check_ocr_data():
             map_obj = conver_list_to_map(exam_obj[0]['data'])
             ocr_data = body['ocr_data']
             table_data = ocr_data['response'][1]['data']
+            students_data = ocr_data['response'][0]['data']
             if len(ocr_data['response'][0]['data']) > len(ocr_data['response'][1]['data']):
                 table_data = ocr_data['response'][0]['data']
+                students_data = ocr_data['response'][1]['data']
             for marks_data in table_data:
                 key = str(marks_data['col'])+str(marks_data['row'])
                 if key in map_obj:
                     marks_data['text'] = map_obj[key]
+            if 'exam_date' in exam_obj[0]:
+                for student_data in students_data:
+                    if student_data['col'] == 1 and student_data['row'] == 3:
+                        student_data['text'] = exam_obj[0]['exam_date']
+                
             res = CustomResponse(Status.SUCCESS.value, ocr_data)
             return res.getres()
         except Exception as e:
