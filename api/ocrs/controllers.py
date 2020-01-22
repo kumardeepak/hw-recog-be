@@ -40,10 +40,12 @@ def check_ocr_data():
     else:
         try:
             exam_obj = json.loads(exam_fromdb.to_json())
+            student_obj = json.loads(student_fromdb.to_json())
             map_obj = conver_list_to_map(exam_obj[0]['data'])
             ocr_data = body['ocr_data']
             table_data = ocr_data['response'][1]['data']
             students_data = ocr_data['response'][0]['data']
+            ocr_data['metadata'] = student_obj[0]
             if len(ocr_data['response'][0]['data']) > len(ocr_data['response'][1]['data']):
                 table_data = ocr_data['response'][0]['data']
                 students_data = ocr_data['response'][1]['data']
