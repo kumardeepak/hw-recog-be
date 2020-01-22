@@ -54,6 +54,8 @@ def check_ocr_data():
                 key = str(marks_data['col'])+str(marks_data['row'])
                 if key in map_obj:
                     marks_data['text'] = map_obj[key]
+                elif str(marks_data['col']) == 0 or str(marks_data['col']) == 1 or str(marks_data['col']) == 2:
+                    marks_data['text'] = ''
             if 'exam_date' in exam_obj[0]:
                 for student_data in students_data:
                     if student_data['col'] == 1 and student_data['row'] == 3:
