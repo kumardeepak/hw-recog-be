@@ -75,7 +75,7 @@ def save_student_masterdata():
             Status.USER_ALREADY_EXISTS.value, None)
         return res.getres(), Status.USER_ALREADY_EXISTS.value['http']['status']
     else:
-        student = Student(student_id=body['student']['student_id'])
+        student = Student(student_id=body['student']['student_id'],student_name=body['student']['student_name'])
         student.save()
     res = CustomResponse(Status.SUCCESS.value, None)
     return res.getres()
