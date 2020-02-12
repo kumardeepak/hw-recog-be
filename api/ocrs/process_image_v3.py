@@ -401,7 +401,7 @@ def api_response(code, message, response=None):
     return rsp
     
 
-def process_image(input_filepath, workspace_dir):
+def process_image_v3(input_filepath, workspace_dir):
     input_filename  = os.path.splitext(os.path.basename(input_filepath))[0]
 
     img_filename    = os.path.join(workspace_dir, data_dir, input_data_dir, input_filename)
