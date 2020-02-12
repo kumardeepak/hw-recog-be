@@ -9,10 +9,6 @@ import uuid
 import glob
 import time
 
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-
-
 data_dir                     = 'data'
 input_data_dir               = 'input'
 output_data_dir              = 'output'
