@@ -43,6 +43,15 @@ def show_img(img):
     plt.figure(figsize=(10,10))
     plt.imshow(img);
 
+def cleanup_ocr_text(text):
+    if len(text) > 1 and text[0] == '|':
+        text = text.strip('|').strip()
+
+    if len(text) > 1 and text[0] == 'I':
+        text = text.strip('I').strip()
+
+    return text
+
 def ocr_from_google_vision(client, filepath):
     with io.open(filepath, 'rb') as image_file1:
             content = image_file1.read()
@@ -51,6 +60,7 @@ def ocr_from_google_vision(client, filepath):
     document = response.full_text_annotation
     text     = document.text.replace('\n', ' ')
     text     = text.strip()
+    text     = cleanup_ocr_text(text)
     print('file (%s) - Vision OCR\'ed (%s)' % (filepath, text))
     return text
 
