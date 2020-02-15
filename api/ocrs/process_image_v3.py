@@ -50,6 +50,10 @@ def cleanup_ocr_text(text):
     if len(text) > 1 and text[0] == 'I':
         text = text.strip('I').strip()
 
+    text = text.replace(', ', '.')
+    text = text.replace('. ', '.')
+    text = text.replace(' ', '.')
+    
     return text
 
 def ocr_from_google_vision(client, filepath):
