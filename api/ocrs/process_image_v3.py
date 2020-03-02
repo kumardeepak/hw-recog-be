@@ -75,6 +75,9 @@ def cleanup_ocr_marks_text(text):
     text = text.replace('ОО', '0')
     if len(text) > 0 and len(text) != 3:
         text = text[0] + '.0'
+
+    if len(text) == 3:
+        text = text[0] + '.0'
     return text
 
 def cleanup_ocr_student_code_text(text):
