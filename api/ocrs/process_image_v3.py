@@ -100,7 +100,7 @@ def ocr_from_google_vision_for_marks(client, filepath):
     with io.open(filepath, 'rb') as image_file1:
             content = image_file1.read()
     content_image = types.Image(content=content)
-    response = client.document_text_detection(image=content_image)
+    response = client.text_detection(image=content_image)
     print('marks %s' % (response))
     document = response.full_text_annotation
     text     = document.text.replace('\n', ' ')
