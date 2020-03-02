@@ -44,21 +44,19 @@ def show_img(img):
     plt.imshow(img);
 
 def cleanup_ocr_text(text):
-    if len(text) > 1 and text[0] == '|':
-        text = text.strip('|').strip()
-
-    if len(text) > 1 and text[0] == 'I':
-        text = text.strip('I').strip()
-
-    text = text.replace(', ', '.')
-    text = text.replace('. ', '.')
-    text = text.replace(' ', '.')
-    
+    text = text.replace(' ', '')
+    text = text.replace('o', '0')
+    text = text.replace('O', '0')
+    text = text.replace('|', '/')
+    text = text.replace('.', '/')
+    text = text.replace('(', '')
+    text = text.replace(')', '')
     return text
 
 def cleanup_ocr_marks_text(text):
     text = text.replace(' ', '')
     text = text.replace('..', '.')
+    text = text.replace(', ', '.')
     text = text.replace('S', '5')
     text = text.replace('s', '5')
     text = text.replace('o', '0')
@@ -75,8 +73,8 @@ def cleanup_ocr_student_code_text(text):
     text = text.replace('o', '0')
     text = text.replace('O', '0')
     text = text.replace('|', '1')
-    if len(text) != 3:
-        text = text[0] + '.0'
+    # if len(text) != 3:
+    #     text = text[0] + '.0'
     return text
 
 def ocr_from_google_vision_for_marks(client, filepath):
