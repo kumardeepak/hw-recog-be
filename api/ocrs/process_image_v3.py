@@ -56,6 +56,53 @@ def cleanup_ocr_text(text):
     
     return text
 
+def cleanup_ocr_marks_text(text):
+    text = text.replace(' ', '')
+    text = text.replace('..', '.')
+    text = text.replace('S', '5')
+    text = text.replace('s', '5')
+    text = text.replace('o', '0')
+    text = text.replace('O', '0')
+    text = text.replace('|', '1')
+    if len(text) != 3:
+        text = text[0] + '.0'
+    return text
+
+def cleanup_ocr_student_code_text(text):
+    text = text.replace(' ', '')
+    text = text.replace('S', '5')
+    text = text.replace('s', '5')
+    text = text.replace('o', '0')
+    text = text.replace('O', '0')
+    text = text.replace('|', '1')
+    if len(text) != 3:
+        text = text[0] + '.0'
+    return text
+
+def ocr_from_google_vision_for_marks(client, filepath):
+    with io.open(filepath, 'rb') as image_file1:
+            content = image_file1.read()
+    content_image = types.Image(content=content)
+    response = client.document_text_detection(image=content_image)
+    document = response.full_text_annotation
+    text     = document.text.replace('\n', ' ')
+    text     = text.strip()
+    text     = cleanup_ocr_marks_text(text)
+    print('file (%s) - Vision OCR\'ed (%s)' % (filepath, text))
+    return text
+
+def ocr_from_google_vision_for_student_code(client, filepath):
+    with io.open(filepath, 'rb') as image_file1:
+            content = image_file1.read()
+    content_image = types.Image(content=content)
+    response = client.document_text_detection(image=content_image)
+    document = response.full_text_annotation
+    text     = document.text.replace('\n', ' ')
+    text     = text.strip()
+    text     = cleanup_ocr_text(text)
+    print('file (%s) - Vision OCR\'ed (%s)' % (filepath, text))
+    return text
+
 def ocr_from_google_vision(client, filepath):
     with io.open(filepath, 'rb') as image_file1:
             content = image_file1.read()
@@ -350,7 +397,7 @@ def process_ocr_marks_received_table(hori_filtered_lines, vert_filtered_lines, f
                 rsp['data'].append({
                     'row': row,
                     'col': col,
-                    'text': ocr_from_google_vision(client, filename)
+                    'text': ocr_from_google_vision_for_marks(client, filename)
                 })
     return rsp
 
@@ -389,11 +436,18 @@ def process_ocr_student_summary_table(hori_filtered_lines, vert_filtered_lines, 
                 filename = os.path.join(output_dir, str(row) + "_" + str(col)+"_"+os.path.basename(filepath) + (".jpg" if (len(os.path.splitext(os.path.basename(filepath))[1]) == 0) else ""))
                 crop_img = image[hori_filtered_lines[row][1]:hori_filtered_lines[row+1][1], vert_filtered_lines[col][0]:vert_filtered_lines[col+1][0]]
                 cv2.imwrite(filename, crop_img)
-                rsp['data'].append({
-                    'row': row,
-                    'col': col,
-                    'text': ocr_from_google_vision(client, filename)
-                })
+                if row == 0 and col == 1:
+                    rsp['data'].append({
+                        'row': row,
+                        'col': col,
+                        'text': ocr_from_google_vision_for_student_code(client, filename)
+                    })
+                else:
+                    rsp['data'].append({
+                        'row': row,
+                        'col': col,
+                        'text': ocr_from_google_vision(client, filename)
+                    })
     return rsp
 
 '''
