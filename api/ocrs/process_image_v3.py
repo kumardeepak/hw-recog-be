@@ -85,6 +85,7 @@ def ocr_from_google_vision_for_marks(client, filepath):
     document = response.full_text_annotation
     text     = document.text.replace('\n', ' ')
     text     = text.strip()
+    print('received marks text %s before post processing' % (text))
     text     = cleanup_ocr_marks_text(text)
     print('file (%s) - Vision OCR\'ed (%s)' % (filepath, text))
     return text
