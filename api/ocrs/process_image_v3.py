@@ -114,7 +114,7 @@ def ocr_from_google_vision_for_student_code(client, filepath):
     with io.open(filepath, 'rb') as image_file1:
             content = image_file1.read()
     content_image = types.Image(content=content)
-    response = client.document_text_detection(image=content_image)
+    response = client.text_detection(image=content_image)
     print('student code %s' % (response))
 
     document = response.full_text_annotation
@@ -128,7 +128,7 @@ def ocr_from_google_vision(client, filepath):
     with io.open(filepath, 'rb') as image_file1:
             content = image_file1.read()
     content_image = types.Image(content=content)
-    response = client.document_text_detection(image=content_image)
+    response = client.text_detection(image=content_image)
     print('date  %s' % (response))
 
     document = response.full_text_annotation
