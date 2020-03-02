@@ -99,7 +99,7 @@ def ocr_from_google_vision_for_student_code(client, filepath):
     document = response.full_text_annotation
     text     = document.text.replace('\n', ' ')
     text     = text.strip()
-    text     = cleanup_ocr_text(text)
+    text     = cleanup_ocr_student_code_text(text)
     print('file (%s) - Vision OCR\'ed (%s)' % (filepath, text))
     return text
 
