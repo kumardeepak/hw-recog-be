@@ -64,8 +64,8 @@ def cleanup_ocr_marks_text(text):
     text = text.replace('o', '0')
     text = text.replace('O', '0')
     text = text.replace('|', '1')
-    if len(text) != 3:
-        text = text[0] + '.0'
+    # if len(text) != 3:
+    #     text = text[0] + '.0'
     return text
 
 def cleanup_ocr_student_code_text(text):
