@@ -79,6 +79,8 @@ def cleanup_ocr_student_code_text(text):
     text = text.replace('|', '1')
     text = text.replace('l', '1')
     text = text.replace('I', '1')
+    text = text.replace('Ο', '0')
+    text = text.replace('ОО', '0')
     # if len(text) != 3:
     #     text = text[0] + '.0'
     return text
