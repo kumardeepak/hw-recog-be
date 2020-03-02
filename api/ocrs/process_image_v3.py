@@ -55,8 +55,9 @@ def cleanup_ocr_text(text):
 
 def cleanup_ocr_marks_text(text):
     text = text.replace(' ', '')
+    text = text.replace(':', '.')
     text = text.replace('..', '.')
-    text = text.replace(', ', '.')
+    text = text.replace(',', '.')
     text = text.replace('S', '5')
     text = text.replace('s', '5')
     text = text.replace('o', '0')
