@@ -51,7 +51,7 @@ def cleanup_ocr_text(text):
     text = text.replace('.', '/')
     text = text.replace('(', '')
     text = text.replace(')', '')
-    text = text.replace('-', '')
+    text = text.replace('-', '/')
 
     l_text = text.split('/')
     if len(l_text) == 3 and len(l_text[0]) == 3:
