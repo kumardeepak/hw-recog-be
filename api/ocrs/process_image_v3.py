@@ -101,7 +101,7 @@ def ocr_from_google_vision_for_marks(client, filepath):
             content = image_file1.read()
     content_image = types.Image(content=content)
     response = client.text_detection(image=content_image)
-    print('marks %s' % (response))
+    # print('marks %s' % (response))
     document = response.full_text_annotation
     text     = document.text.replace('\n', ' ')
     text     = text.strip()
@@ -115,7 +115,7 @@ def ocr_from_google_vision_for_student_code(client, filepath):
             content = image_file1.read()
     content_image = types.Image(content=content)
     response = client.text_detection(image=content_image)
-    print('student code %s' % (response))
+    # print('student code %s' % (response))
 
     document = response.full_text_annotation
     text     = document.text.replace('\n', ' ')
@@ -129,7 +129,7 @@ def ocr_from_google_vision(client, filepath):
             content = image_file1.read()
     content_image = types.Image(content=content)
     response = client.text_detection(image=content_image)
-    print('date  %s' % (response))
+    # print('date  %s' % (response))
 
     document = response.full_text_annotation
     text     = document.text.replace('\n', ' ')
