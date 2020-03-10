@@ -3,6 +3,7 @@ from api.ocrs.helpers import get_table_structure
 from api.ocrs.process_image import process_image_with_vision
 from api.ocrs.process_image_v3 import process_image_v3
 from api.ocrs.process_invoice_v1 import process_invoice_v1
+from api.ocrs.process_image_v4 import process_image_v4
 
 import json
 import time
@@ -133,6 +134,14 @@ def process_ocr():
     print('received file [%s] for processing is present at [%s]' % (filename, absolute_filepath))
     return process_image_v3(absolute_filepath, workspace_dir)
 
+@controllers.route('/processv4', methods=['POST'])
+def process_ocr():
+    json_data           = request.get_json(force=True)
+    filename            = json_data['filename']
+    absolute_filepath   = os.path.join(input_dir, filename)
+    
+    print('received file [%s] for processing is present at [%s]' % (filename, absolute_filepath))
+    return process_image_v4(absolute_filepath, workspace_dir)
 
 @controllers.route('/invoice', methods=['POST'])
 def process_invoice_ocr():
