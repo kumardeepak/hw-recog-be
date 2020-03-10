@@ -1,4 +1,4 @@
-## import cv2
+import cv2
 import numpy as np
 import os
 import glob
@@ -9,8 +9,8 @@ import uuid
 import glob
 import time
 
-# import matplotlib.pyplot as plt
-# import matplotlib as mpl
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
 
 data_dir                     = 'data'
@@ -196,7 +196,7 @@ def resize_image(img, size=(28,28)):
     return cv2.resize(mask, size, interpolation)
 
 # resize original image for processing
-def image_resize(image, width = None, height = None, inter = None):
+def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
     dim = None
     (h, w) = image.shape[:2]
 
@@ -484,7 +484,7 @@ def api_response(code, message, response=None):
     return rsp
     
 
-def process_image_v4(input_filepath, workspace_dir):
+def process_image(input_filepath, workspace_dir):
     input_filename  = os.path.splitext(os.path.basename(input_filepath))[0]
 
     img_filename    = os.path.join(workspace_dir, data_dir, input_data_dir, input_filename)
@@ -509,8 +509,8 @@ def process_image_v4(input_filepath, workspace_dir):
 
     boxes_response = []
 
-    org_img1, _, img, hori_filtered_contours, hori_filtered_lines     = extract_horizontal_lines(table_file, length= 350, debug=False)
-    org_img2, _, img, vert_filtered_contours, vert_filtered_lines     = extract_vertical_lines(table_file, length= 400, debug=False)
+    org_img1, _, img, hori_filtered_contours, hori_filtered_lines     = extract_horizontal_lines(input_filepath, length= 350, debug=False)
+    org_img2, _, img, vert_filtered_contours, vert_filtered_lines     = extract_vertical_lines(input_filepath, length= 400, debug=False)
     
     print('vertical lines: (%d), horizontal lines (%d)' % (len(vert_filtered_lines), len(hori_filtered_lines)))
     output_dir  = os.path.join(output_boxes_dir, os.path.splitext(os.path.basename(img_filename))[0])
