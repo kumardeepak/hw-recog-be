@@ -455,7 +455,7 @@ def process_table_boxes(hlines, vlines, filepath, output_dir):
                                            })
                 
             if row > 3:
-                marks_tbl['data'].append({'row': row - 2,
+                marks_tbl['data'].append({'row': row - 3,
                                           'col': col,
                                           'text': ocr_from_google_vision_for_marks(client, filename)
                                          })
