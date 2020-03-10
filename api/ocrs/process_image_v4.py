@@ -196,7 +196,7 @@ def resize_image(img, size=(28,28)):
     return cv2.resize(mask, size, interpolation)
 
 # resize original image for processing
-def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
+def image_resize(image, width = None, height = None, inter = None):
     dim = None
     (h, w) = image.shape[:2]
 
