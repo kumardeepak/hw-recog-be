@@ -82,7 +82,7 @@ def detect_tables_and_lines(filepath):
     ls = process_lines(filepath)
 
     table_coordinates = []
-    lines_cooridnates = []
+    lines_coordinates = []
     for t in ts:
         table_coordinates.append((t.y, t.y+t.h))
     
@@ -96,7 +96,7 @@ def detect_tables_and_lines(filepath):
                 within_table = True
                 break
         if within_table == False:
-            lines_cooridnates.append(l)
+            lines_coordinates.append(l)
 
     tables = []
     lines  = []
