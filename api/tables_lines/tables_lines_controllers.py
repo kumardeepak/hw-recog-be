@@ -3,7 +3,7 @@ import json
 import time
 
 from flask import Blueprint, jsonify, request
-from api.tables_lines.process_tables_lines import detect_tables_and_lines
+from api.tables_lines.process_tables_lines import detect_tables_and_lines, detect_tables_and_lines_v1
 
 controllers         = Blueprint('tables_lines_controllers', __name__)
 workspace_dir       = '/home/ubuntu/workspace/output'
@@ -20,7 +20,7 @@ def api_response(code, message, response=None):
     return rsp
 
 def api_wrapper_detect_tables_and_lines(filepath):
-    tables, lines = detect_tables_and_lines(filepath)
+    tables, lines = detect_tables_and_lines_v1(filepath)
     return api_response(200, 'successfully processed the image', {'tables': tables, 'lines': lines}) 
 
 
