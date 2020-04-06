@@ -80,13 +80,17 @@ class ExtractTable:
             contours                = contours[0] if len(contours) == 2 else contours[1]
             intersections           = cv2.bitwise_and(horizontal, vertical)
 
+            if self.debug:
+                print('V1: total contours found %d' % ( len(contours) ))
+
             tables                  = []
             for i in range(len(contours)):
                 (rect, table_joints) = self.verify_table(contours[i], intersections)
                 if rect == None or table_joints == None:
                     continue
                 rects.append(rect)
-
+        if self.debug:
+            print('V1: found %d tables' % (len(rects)))
         return rects
 
     def getTables(self):
@@ -100,7 +104,7 @@ class ExtractTable:
             contours    = cv2.findContours(bw_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             contours    = contours[0] if len(contours) == 2 else contours[1]
             if self.debug:
-                print('total contours found %d' % ( len(contours) ))
+                print('V0: total contours found %d' % ( len(contours) ))
 
             for c in contours:
                 peri    = cv2.arcLength(c, True)
@@ -109,10 +113,12 @@ class ExtractTable:
                     x,y,w,h = cv2.boundingRect(approx)
                     rects.append((x,y,w,h))
 
+        if self.debug:
+            print('V1: found %d tables' % (len(rects)))
         return rects
 
     def getTableImage(self, rect):
-        EXTRA_PIXEL = 0
+        EXTRA_PIXEL = 20
         img      = cv2.imread(self.filepath, cv2.IMREAD_COLOR)
         x,y,w,h  = rect
         crop     = img[y-EXTRA_PIXEL:y-EXTRA_PIXEL+h+2*EXTRA_PIXEL, x-EXTRA_PIXEL:x-EXTRA_PIXEL+w+2*EXTRA_PIXEL]
