@@ -125,14 +125,17 @@ class ExtractTable:
         return crop
 
     def getTableRects(self, rect):
+        SCALE               = 30
         src_img             = self.getTableImage(rect)
         gray_img            = cv2.cvtColor(src_img, cv2.COLOR_BGR2GRAY)
         thresh, bw_img      = cv2.threshold(gray_img, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
         bw_img              = 255-bw_img
         
-        kernel_len          = np.array(src_img).shape[1]//100
-        ver_kernel          = cv2.getStructuringElement(cv2.MORPH_RECT, (1, kernel_len))
-        hor_kernel          = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_len, 1))
+        vertical_size       = int(src_img.shape[0] / SCALE)
+        ver_kernel          = cv2.getStructuringElement(cv2.MORPH_RECT, (1, vertical_size))
+
+        horizontal_size     = int(src_img.shape[1] / SCALE)
+        hor_kernel          = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontal_size, 1))
         kernel              = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
         
         # Use vertical kernel to detect and save the vertical lines
