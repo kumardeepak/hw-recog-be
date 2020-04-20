@@ -3,6 +3,7 @@ from api.users.views import users
 from api.ocrs.controllers import controllers as ocr_controllers
 from api.info.info_controllers import controllers as info_controllers
 from api.tables_lines.tables_lines_controllers import controllers as tables_lines_controllers
+
 #from api.table_rois.tables_extractor_controller import controllers as tables_rois_controllers
 
 app = Flask(__name__)
