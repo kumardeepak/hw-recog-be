@@ -4,10 +4,11 @@ import time
 
 from flask import Blueprint, jsonify, request
 from api.tables_lines.process_tables_lines import detect_tables_and_lines, detect_tables_and_lines_v1
+from api.table_rois.table_extractor import Table_extractor
 
 controllers         = Blueprint('tables_lines_controllers', __name__)
 workspace_dir       = '/home/ubuntu/workspace/output'
-input_dir           = '/tmp/nginx'
+input_dir           =  '/tmp/nginx'
 
 def api_response(code, message, response=None):
     rsp = {
@@ -21,7 +22,10 @@ def api_response(code, message, response=None):
 
 def api_wrapper_detect_tables_and_lines(filepath):
     tables, lines = detect_tables_and_lines_v1(filepath)
-    return api_response(200, 'successfully processed the image', {'tables': tables, 'lines': lines}) 
+    tables_rois = Table_extractor (filepath)              #added 20/4/2020 dhiraj
+    rois = tables_rois.response['response']['tables']
+
+    return api_response(200, 'successfully processed the image', {'tables': rois, 'lines': lines})
 
 
 @controllers.route('/detect', methods=['POST'])
@@ -29,6 +33,8 @@ def process_image():
     json_data           = request.get_json(force=True)
     filename            = json_data['filename']
     absolute_filepath   = os.path.join(input_dir, filename)
+
+
     
     print('received file [%s] for processing is present at [%s]' % (filename, absolute_filepath))
     return api_wrapper_detect_tables_and_lines(absolute_filepath)

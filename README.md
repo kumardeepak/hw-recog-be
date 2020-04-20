@@ -1,9 +1,7 @@
 # hw-recog-be
 handwriting recognition REST backend
 
-Avilable API routes
-
-  '/tables_extractor/rois' (POST, OPTIONS) -> tables_rois_controllers.process_image>,
+Available API routes
 
   '/tables_lines/detect' (POST, OPTIONS) -> tables_lines_controllers.process_image>,
   

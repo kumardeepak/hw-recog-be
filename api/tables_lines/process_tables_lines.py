@@ -144,7 +144,7 @@ def detect_tables_and_lines(filepath):
 
 
 def detect_tables_and_lines_v1(filepath):
-    ts          = process_tables_v1(filepath)
+    ts          = [] #,process_tables_v1(filepath)  #modified 20/4/2020 dhiraj
     ls          = process_lines(filepath)
 
     table_coordinates = []
