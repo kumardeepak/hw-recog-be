@@ -1,1 +1,2 @@
-from .rect import RectRepositories
+from .rect  import RectRepositories
+from .table import TableRepositories

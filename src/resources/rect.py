@@ -4,7 +4,7 @@ import config
 import logging
 import magic
 from flask.json import jsonify
-from repositories import RectRepositories
+from repositories import RectRepositories, TableRepositories
 
 def check_image_file_id(id):
     if os.path.exists(os.path.join(config.FILE_STORAGE_PATH, id)) and os.path.isfile(os.path.join(config.FILE_STORAGE_PATH, id)):
@@ -27,9 +27,13 @@ parser.add_argument('image_file_id', location='json', type=check_image_file_id, 
 class RectResource(Resource):
     def post(self):
         args            = parser.parse_args()
-        rects           = RectRepositories(os.path.join(config.FILE_STORAGE_PATH, args['image_file_id']))
-        lines, tables   = rects.get_tables_and_lines()
+        Rects           = RectRepositories(os.path.join(config.FILE_STORAGE_PATH, args['image_file_id']))
         
+        lines, tables   = Rects.get_tables_and_lines()
+        for table in tables:
+            TableRepo   = TableRepositories(os.path.join(config.FILE_STORAGE_PATH, args['image_file_id']), table)
+            logging.debug('Table co-ordinates: %s' % (TableRepo.response))
+      
         return {
             'status': {
                 'code' : 200,
