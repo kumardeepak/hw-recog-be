@@ -3,6 +3,7 @@ import numpy as np
 import logging
 import os
 import config
+import uuid
 
 class TableRepositories:
     def __init__(self, filepath, rect, SORT_METHOD='top-to-bottom', MAX_THRESHOLD_VALUE=255, BLOCK_SIZE=15,
@@ -30,10 +31,11 @@ class TableRepositories:
 
     def load_image(self):
     
-        IMAGE_BUFFER        = 0
+        IMAGE_BUFFER        = 10
         image               = cv2.imread(self.image_path, 0)
         self.input_image    = image[self.rect['y']-IMAGE_BUFFER:self.rect['y']+self.rect['h']+IMAGE_BUFFER,self.rect['x']-IMAGE_BUFFER:self.rect['x']+self.rect['w']+IMAGE_BUFFER]
         self.slate          = np.zeros (self.input_image.shape)
+        cv2.imwrite( str(uuid.uuid4())+ '.png', self.input_image)
 
     def get_table_mask(self):
         # binarization of image
