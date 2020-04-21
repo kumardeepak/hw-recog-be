@@ -3,6 +3,7 @@ import os
 import config
 import logging
 import magic
+import cv2
 from flask.json import jsonify
 from repositories import RectRepositories, TableRepositories
 
@@ -28,12 +29,25 @@ class RectResource(Resource):
     def post(self):
         args            = parser.parse_args()
         Rects           = RectRepositories(os.path.join(config.FILE_STORAGE_PATH, args['image_file_id']))
-        
+
+        '''
         lines, tables   = Rects.get_tables_and_lines()
+        print(tables, '  tables found ')
         for table in tables:
+
             TableRepo   = TableRepositories(os.path.join(config.FILE_STORAGE_PATH, args['image_file_id']), table)
             logging.debug('Table co-ordinates: %s' % (TableRepo.response))
-      
+            cv2.imwrite( 'mask.png' ,TableRepo.mask)
+        #tables = TableRepo.response ['response'] ['tables']
+        '''
+
+        lines, _ = Rects.get_tables_and_lines ()
+        table = None
+        # for table in tables:
+        TableRepo = TableRepositories (os.path.join (config.FILE_STORAGE_PATH, args ['image_file_id']), table)
+        tables = TableRepo.response ['response'] ['tables']
+        #cv2.imwrite ('mask.png', TableRepo.mask)
+        #cv2.imwrite ('slate.png', TableRepo.slate)
         return {
             'status': {
                 'code' : 200,

@@ -5,7 +5,7 @@ DEBUG = True
 API_URL_PREFIX = "/api/v1"
 HOST = 'localhost'
 PORT = 3000
-FILE_STORAGE_PATH = '/Users/kd/Workspace/python/github/data/input/'
+FILE_STORAGE_PATH =  '/Users/kd/Workspace/python/github/data/input/' #/home/dddhiraj/Documents/Tarento/Anuwad/Tabular_data_extraction/sample_images
 ENABLE_CORS = False
 
 DATABASE_SAVE = False
