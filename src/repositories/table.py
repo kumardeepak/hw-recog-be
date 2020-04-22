@@ -94,7 +94,8 @@ class TableRepositories:
                 midpoint = [int (x1 + w1 / 2), int (y1 + h1 / 2)]  # np.mean(contours[i],axis=0)
                 midpoints.append (midpoint)
                 if len (midpoints) > 1:
-                    shift = midpoints [-1] [0] - midpoints [-2] [0]
+                    shift = midpoints [-1] [1] - midpoints [-2] [1]
+                    shift = abs(shift)
 
                     # Detecting change in column by measuring difference in x coordinate of current and previous cell
                     # (cells already sored based on their coordinates)
@@ -109,6 +110,31 @@ class TableRepositories:
                              cv2.FONT_HERSHEY_SIMPLEX,
                              0.3, 255, 1, cv2.LINE_AA)
         return draw_conts, rects
+    
+    def end_point_correction(self,x,y,w,h,margin):
+        #check if after adding margin the endopints are still inside the image
+        
+        ymax = self.input_image.shape [0]
+        xmax = self.input_image.shape [1]
+        
+        if (y - margin) < 0:
+            ystart = 0
+        else :
+            ystart = y - margin 
+        if (y + h + margin) > ymax :
+            yend = ymax
+        else :
+            yend = y + h + margin 
+        if (x - margin) < 0:
+            xstart = 0
+        else :
+            xstart = x - margin 
+        if (x + w + margin) > xmax :
+            xend = xmax
+        else :
+            xend = x + w + margin
+            
+        return ystart,yend, xstart,xend
 
     def table_indexing(self):
 
@@ -129,8 +155,11 @@ class TableRepositories:
                 # Filtering for noise
                 if (area_ratio < 0.9) & (area_ratio > 0.005):
                     table_dic = {"x": x, "y": y, "w": w, "h": h}
+                    margin  = 2
+                    #check if after adding margin the endopints are still inside the image
+                    ystart,yend, xstart,xend= self.end_point_correction(x,y,w,h,margin)
 
-                    crop_fraction = self.mask [y - 2: y + h + 2, x - 2:x + w + 2]
+                    crop_fraction = self.mask[ystart: yend, xstart:xend]
 
                     sub_contours = cv2.findContours (crop_fraction, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
                     sub_contours = sub_contours [0] if len (sub_contours) == 2 else sub_contours [1]
@@ -140,6 +169,6 @@ class TableRepositories:
                     table_dic ['rect'] = rects
 
                     # self.slate stores an image indexed with cell location for all available tables
-                    self.slate [y - 2: y + h + 2, x - 2:x + w + 2] = indexed_sub_image
+                    self.slate[ystart: yend, xstart:xend] = indexed_sub_image
 
                     self.response ["response"] ["tables"].append (table_dic)
