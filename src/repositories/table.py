@@ -89,9 +89,10 @@ class TableRepositories:
         midpoints = []
         rects = []
         xi, yi = 0, 0
-        for i in range (len (contours)):
-            cont_area = cv2.contourArea (contours [i])
-            x1, y1, w1, h1 = cv2.boundingRect (contours [i])
+        count_contours = len (contours)
+        for i in range (count_contours):
+            cont_area = cv2.contourArea (contours [count_contours - i -1])
+            x1, y1, w1, h1 = cv2.boundingRect (contours [count_contours - i - 1])
 
             area_ratio = cont_area / float(image_area)
 
@@ -115,7 +116,7 @@ class TableRepositories:
                 cv2.putText (draw_conts, str ((xi, yi)), (int (midpoint [0]), int (midpoint [1])),
                              cv2.FONT_HERSHEY_SIMPLEX,
                              0.3, 255, 1, cv2.LINE_AA)
-                cv2.imwrite('out/slate' + str(i) + '.png' , draw_conts)
+                #cv2.imwrite('out/slate' + str(i) + '.png' , draw_conts)
         return draw_conts, rects
     
     def end_point_correction(self,x,y,w,h,margin):
