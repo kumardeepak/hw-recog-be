@@ -66,7 +66,7 @@ class RectRepositories:
 
         rects = []
         if len(contours) == 0:
-            return rects
+            return img, intersection, rects
 
         contours, boundingBoxes = self.sort_contours(contours)
         for c in contours:
