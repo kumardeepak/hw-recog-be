@@ -36,8 +36,6 @@ class TableRepositories:
         image = cv2.imread (self.image_path, 0)
         self.input_image = image  # [self.rect['y']-IMAGE_BUFFER:self.rect['y']+self.rect['h']+IMAGE_BUFFER,self.rect['x']-IMAGE_BUFFER:self.rect['x']+self.rect['w']+IMAGE_BUFFER]
         self.slate = np.zeros (self.input_image.shape)
-        #print (self.input_image.shape, 'shape of input image', self.rect)
-        #cv2.imwrite (str (uuid.uuid4 ()) + '.png', self.input_image)
 
     def get_table_mask(self):
         #binarization of image
@@ -48,7 +46,6 @@ class TableRepositories:
         vertical = filtered.copy ()
 
         horizontal_size = int (horizontal.shape [1] / self.SCALE)
-        print (horizontal_size, 'horizontal_size')
         horizontal_structure = cv2.getStructuringElement (cv2.MORPH_RECT, (horizontal_size, 1))
         horizontal = cv2.erode (horizontal, horizontal_structure)
         horizontal = cv2.dilate (horizontal, horizontal_structure)
@@ -102,13 +99,10 @@ class TableRepositories:
                     # Detecting change in column by measuring difference in x coordinate of current and previous cell
                     # (cells already sored based on their coordinates)
                     if shift < 10:
-                        # print(shift , midpoints[-1][0] , midpoints[-2][0] ,'True')
-                        # print(xi,yi)
                         yi = yi + 1
                     else:
                         yi = 0
                         xi = xi + 1
-                        # print('False' ,xi,yi)
                 rects.append ({"x": x1, "y": y1, "w": w1, "h": h1, "index": (xi, yi)})
                 cv2.rectangle (draw_conts, (x1, y1), (x1 + w1, y1 + h1), 255, 1)
                 cv2.putText (draw_conts, str ((xi, yi)), (int (midpoint [0]), int (midpoint [1])),
@@ -128,7 +122,6 @@ class TableRepositories:
 
         if len (contours) > 0:
             # Indexing one table at a time
-            print ('Number of tables found ', len (contours))
             for c in contours:
                 x, y, w, h = cv2.boundingRect (c)
                 area_ratio = (w * h) / image_area
@@ -137,7 +130,6 @@ class TableRepositories:
                 if (area_ratio < 0.9) & (area_ratio > 0.005):
                     table_dic = {"x": x, "y": y, "w": w, "h": h}
 
-                    print (x, y, w, h, area_ratio)
                     crop_fraction = self.mask [y - 2: y + h + 2, x - 2:x + w + 2]
 
                     sub_contours = cv2.findContours (crop_fraction, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
