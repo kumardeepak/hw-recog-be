@@ -41,6 +41,7 @@ class TableRepositories:
         #binarization of image
         filtered = cv2.adaptiveThreshold (~self.input_image, self.MAX_THRESHOLD_VALUE, cv2.ADAPTIVE_THRESH_MEAN_C,
                                           cv2.THRESH_BINARY, self.BLOCK_SIZE, self.THRESHOLD_CONSTANT)
+        self.filtered = filtered
         # Finding srtuctre elements (horizontal and vertical lines)
         horizontal = filtered.copy ()
         vertical = filtered.copy ()
@@ -50,10 +51,14 @@ class TableRepositories:
         horizontal = cv2.erode (horizontal, horizontal_structure)
         horizontal = cv2.dilate (horizontal, horizontal_structure)
 
-        vertical_size = int (vertical.shape [0] / self.SCALE)
+        height_to_width_ratio = self.input_image.shape[0] / float(self.input_image.shape[1])
+        #print(height_to_width_ratio)
+        vertical_size = int (vertical.shape [0] / (self.SCALE * height_to_width_ratio))
+        #print(vertical_size , 'vetical_size')
         vertical_structure = cv2.getStructuringElement (cv2.MORPH_RECT, (1, vertical_size))
         vertical = cv2.erode (vertical, vertical_structure)
         vertical = cv2.dilate (vertical, vertical_structure)
+
 
         # generating table borders
         self.mask = horizontal + vertical
@@ -109,6 +114,7 @@ class TableRepositories:
                 cv2.putText (draw_conts, str ((xi, yi)), (int (midpoint [0]), int (midpoint [1])),
                              cv2.FONT_HERSHEY_SIMPLEX,
                              0.3, 255, 1, cv2.LINE_AA)
+                cv2.imwrite('out/slate' + str(i) + '.png' , draw_conts)
         return draw_conts, rects
     
     def end_point_correction(self,x,y,w,h,margin):
@@ -170,5 +176,10 @@ class TableRepositories:
 
                     # self.slate stores an image indexed with cell location for all available tables
                     self.slate[ystart: yend, xstart:xend] = indexed_sub_image
-
                     self.response ["response"] ["tables"].append (table_dic)
+
+        #cv2.imwrite ('out/slate.png', self.slate)
+        #cv2.imwrite ('out/mask.png', self.mask)
+        #cv2.imwrite ('out/filtered.png', self.filtered)
+
+
