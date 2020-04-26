@@ -10,7 +10,7 @@ class TableRepositories:
     def __init__(self, filepath, rect, SORT_METHOD='top-to-bottom', MAX_THRESHOLD_VALUE=255, BLOCK_SIZE=15,
                  THRESHOLD_CONSTANT=0, SCALE=15):
         '''
-        :param filepath: absolute path of input image file
+        :param filepath: absolute path of input image file , or an image as a numpy array
         :param SORT_METHOD: order of indexing of cells in a table
         :param BLOCK_SIZE: size of neighbourhood taken in account for calculating adaptive threshold
         :param THRESHOLD_CONSTANT: offset used for adaptive thresholding
@@ -33,7 +33,10 @@ class TableRepositories:
     def load_image(self):
 
         IMAGE_BUFFER = 10
-        image = cv2.imread (self.image_path, 0)
+        if type (self.image_path) == str:
+            image = cv2.imread (self.image_path, 0)
+        else:
+            image = self.image_path
         self.input_image = image  # [self.rect['y']-IMAGE_BUFFER:self.rect['y']+self.rect['h']+IMAGE_BUFFER,self.rect['x']-IMAGE_BUFFER:self.rect['x']+self.rect['w']+IMAGE_BUFFER]
         self.slate = np.zeros (self.input_image.shape)
 
@@ -176,10 +179,12 @@ class TableRepositories:
 
                     indexed_sub_image, rects = self.draw_contours_index (sorted_conts, img=crop_fraction)
                     table_dic ['rect'] = rects
+                    if len(rects) > 0 :
+                        self.response ["response"] ["tables"].append (table_dic)
+
 
                     # self.slate stores an image indexed with cell location for all available tables
                     self.slate[ystart: yend, xstart:xend] = indexed_sub_image
-                    self.response ["response"] ["tables"].append (table_dic)
 
         #cv2.imwrite ('out/slate.png', self.slate)
         #cv2.imwrite ('out/mask.png', self.mask)
