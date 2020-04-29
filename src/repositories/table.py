@@ -1,13 +1,13 @@
 import cv2
 import numpy as np
-import logging
-import os
-import config
-import uuid
+#import logging
+#import os
+#import config
+#import uuid
 
 
 class TableRepositories:
-    def __init__(self, filepath, rect, SORT_METHOD='top-to-bottom', MAX_THRESHOLD_VALUE=255, BLOCK_SIZE=15,
+    def __init__(self, filepath, rect=None, SORT_METHOD='top-to-bottom', MAX_THRESHOLD_VALUE=255, BLOCK_SIZE=15,
                  THRESHOLD_CONSTANT=0, SCALE=15):
         '''
         :param filepath: absolute path of input image file , or an image as a numpy array
@@ -122,30 +122,30 @@ class TableRepositories:
                              0.3, 255, 1, cv2.LINE_AA)
                 #cv2.imwrite('out/slate' + str(i) + '.png' , draw_conts)
         return draw_conts, rects
-    
+
     def end_point_correction(self,x,y,w,h,margin):
         #check if after adding margin the endopints are still inside the image
-        
+
         ymax = self.input_image.shape [0]
         xmax = self.input_image.shape [1]
-        
+
         if (y - margin) < 0:
             ystart = 0
         else :
-            ystart = y - margin 
+            ystart = y - margin
         if (y + h + margin) > ymax :
             yend = ymax
         else :
-            yend = y + h + margin 
+            yend = y + h + margin
         if (x - margin) < 0:
             xstart = 0
         else :
-            xstart = x - margin 
+            xstart = x - margin
         if (x + w + margin) > xmax :
             xend = xmax
         else :
             xend = x + w + margin
-            
+
         return ystart,yend, xstart,xend
 
     def table_indexing(self):
@@ -186,8 +186,6 @@ class TableRepositories:
                     # self.slate stores an image indexed with cell location for all available tables
                     self.slate[ystart: yend, xstart:xend] = indexed_sub_image
 
-        #cv2.imwrite ('out/slate.png', self.slate)
-        #cv2.imwrite ('out/mask.png', self.mask)
-        #cv2.imwrite ('out/filtered.png', self.filtered)
-
-
+        cv2.imwrite ('out/slate.png', self.slate)
+        cv2.imwrite ('out/mask.png', self.mask)
+        cv2.imwrite ('out/filtered.png', self.filtered)

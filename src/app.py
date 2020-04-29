@@ -14,4 +14,5 @@ for blueprint in vars(routes).values():
         server.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
 
 if __name__ == "__main__":
+    #print(server.url_map)
     server.run(host=config.HOST, port=config.PORT, debug=True)

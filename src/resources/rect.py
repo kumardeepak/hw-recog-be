@@ -5,13 +5,14 @@ import logging
 import magic
 import cv2
 from flask.json import jsonify
-from repositories import RectRepositories, TableRepositories
+from repositories import RectRepositories, TableRepositories, OCRlineRepositories
 
 def check_image_file_id(id):
     if os.path.exists(os.path.join(config.FILE_STORAGE_PATH, id)) and os.path.isfile(os.path.join(config.FILE_STORAGE_PATH, id)):
         f           = magic.Magic(mime=True, uncompress=True)
         fileType    = f.from_file(os.path.join(config.FILE_STORAGE_PATH, id))
-        if   fileType == 'image/jpeg' or fileType == 'image/jpg'  or fileType == 'image/png':
+        print(fileType , 'fileType is this')
+        if   fileType == 'image/jpeg' or fileType == 'image/jpg'  or fileType == 'image/png' or fileType == 'application/pdf' :
             logging.debug("file id %s is a valid %s image file" % (id, fileType))
             return id
         else:
@@ -23,7 +24,8 @@ def check_image_file_id(id):
 
 parser = reqparse.RequestParser(bundle_errors=True)
 parser.add_argument('Content-Type', location='headers', type=str, help='Please set Content-Type as application/json')
-parser.add_argument('image_file_id', location='json', type=check_image_file_id, help='Please provide valid image_file_id in JPEG/PNG format', required=True)
+parser.add_argument('image_file_id', location='json', type=check_image_file_id, help='Please provide valid image_file_id in JPEG/PNG format', required=False)
+parser.add_argument('pdf_file_id', location='json', type=check_image_file_id, help='Please provide valid image_file_id in JPEG/PNG format', required=False)
 
 class RectResource(Resource):
     def post(self):
@@ -41,4 +43,19 @@ class RectResource(Resource):
             },
             'lines': lines,
             'tables': tables
+        }
+
+
+class OcrLineResource(Resource):
+    def post(self):
+        args              = parser.parse_args()
+        Ocrlinewise       = OCRlineRepositories(os.path.join (config.FILE_STORAGE_PATH, args ['pdf_file_id']),language=config.LANGUAGE)
+        line_data         = Ocrlinewise.response
+        return {
+            'status': {
+                'code' : 200,
+                'message' : 'api successful'
+            },
+            'resolution': line_data['resolution'],
+            'lines_data': line_data['lines_data']
         }
