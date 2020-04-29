@@ -1,7 +1,4 @@
-from PIL import Image
 import pytesseract
-#from pytesseract import Output
-import sys
 import cv2
 from pdf2image import convert_from_path
 import os
@@ -28,7 +25,6 @@ class OCRlineRepositories:
         convert_from_path(self.pdf_path , output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '/0001*.jpg'))
         self.number_of_digits = len(str(self.num_of_pages))
-        #self.response = [None] * num_of_pages
 
     def mask_out_tables(self, table_detect_file, page):
         tables     = TableRepositories (table_detect_file)
@@ -36,7 +32,6 @@ class OCRlineRepositories:
 
         page_image = cv2.imread (page, 0)
         if len (table_rois) != 0:
-            #print (table_rois)
             # images extracted by pdftohtml and pdftoimage have different resolutions
             y_scale = page_image.shape [0] / float (tables.input_image.shape [0])
             x_scale = page_image.shape [1] / float (tables.input_image.shape [1])
