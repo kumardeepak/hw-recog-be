@@ -48,10 +48,11 @@ class OCRlineRepositories:
         hocr       = pytesseract.image_to_pdf_or_hocr (page_image, lang=self.pdf_language, extension='hocr')
         tree       = html.fromstring (hocr)
         line_data  = []
+        page_index = 0
         for path in tree.xpath ('//*'):
             node = path.values ()
             if 'ocr_line' in node:
-                page_index   = node [1].split ('_') [-1]
+                #page_index   = node [1].split ('_') [-1]
                 bbox         = node [2].split (';') [0].split (' ')
                 left         = int (bbox [1])
                 top          = int (bbox [2])
@@ -61,7 +62,8 @@ class OCRlineRepositories:
                     if (len(child.text) > 0) & (child.text != ' '):
                         line_text += ' ' + child.text
                 if len (line_text) > 0:
-                    pdf_index += 1
+                    pdf_index  += 1
+                    page_index += 1
                     line_data.append (
                         {'x': left, 'y': top, 'height': height, 'text': str(line_text [1:]), 'page_index': page_index,
                          'pdf_index': pdf_index})
