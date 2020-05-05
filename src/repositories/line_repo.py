@@ -9,11 +9,12 @@ from lxml import html
 
 class OCRlineRepositories:
 
-    def __init__(self, pdf_path ,language = 'hin+eng'):
+    def __init__(self, pdf_path):
         self.pdf_path          = pdf_path
-        self.pdf_language      = language
         self.response          = {'resolution': None , 'lines_data': []}
+        self.language_map      = {'Malayalam' : 'mal' , 'Tamil':'tam' , 'Devanagari':'hin','Telugu':'tel'}
         self.pdf_to_image ()
+        self.pdf_language_detect ()
         self.line_metadata()
         self.delete_images()
 
@@ -25,6 +26,13 @@ class OCRlineRepositories:
         convert_from_path(self.pdf_path , output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '/0001*.jpg'))
         self.number_of_digits = len(str(self.num_of_pages))
+
+    def pdf_language_detect(self):
+        page_file         = self.pdf_to_image_dir + '/0001-' + self.page_num_correction (0) + '.jpg'
+        osd               =  pytesseract.image_to_osd (page_file)
+        language_script   =  osd.split('\nScript')[1][2:]
+        self.pdf_language =  self.language_map[language_script]
+        print( 'Language detected {0}'.format(self.pdf_language))
 
     def mask_out_tables(self, table_detect_file, page):
         tables     = TableRepositories (table_detect_file)

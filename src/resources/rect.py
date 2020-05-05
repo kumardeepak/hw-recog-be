@@ -49,7 +49,7 @@ class RectResource(Resource):
 class OcrLineResource(Resource):
     def post(self):
         args              = parser.parse_args()
-        Ocrlinewise       = OCRlineRepositories(os.path.join (config.FILE_STORAGE_PATH, args ['pdf_file_id']),language=config.LANGUAGE)
+        Ocrlinewise       = OCRlineRepositories(os.path.join (config.FILE_STORAGE_PATH, args ['pdf_file_id']))
         line_data         = Ocrlinewise.response
         return {
             'status': {
