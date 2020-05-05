@@ -11,7 +11,7 @@ def check_image_file_id(id):
     if os.path.exists(os.path.join(config.FILE_STORAGE_PATH, id)) and os.path.isfile(os.path.join(config.FILE_STORAGE_PATH, id)):
         f           = magic.Magic(mime=True, uncompress=True)
         fileType    = f.from_file(os.path.join(config.FILE_STORAGE_PATH, id))
-        print(fileType , 'fileType is this')
+        #print(fileType , 'fileType is this')
         if   fileType == 'image/jpeg' or fileType == 'image/jpg'  or fileType == 'image/png' or fileType == 'application/pdf' :
             logging.debug("file id %s is a valid %s image file" % (id, fileType))
             return id

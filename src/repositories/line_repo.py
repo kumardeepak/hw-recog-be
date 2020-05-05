@@ -45,7 +45,7 @@ class OCRlineRepositories:
         return page_image
 
     def line_parser(self, page_image, pdf_index):
-        hocr       = pytesseract.image_to_pdf_or_hocr (page_image, lang='hin+eng', extension='hocr')
+        hocr       = pytesseract.image_to_pdf_or_hocr (page_image, lang=self.pdf_language, extension='hocr')
         tree       = html.fromstring (hocr)
         line_data  = []
         for path in tree.xpath ('//*'):
@@ -58,7 +58,8 @@ class OCRlineRepositories:
                 height       = int (bbox [4]) - top
                 line_text = ''
                 for child in path:
-                    line_text += ' ' + child.text
+                    if (len(child.text) > 0) & (child.text != ' '):
+                        line_text += ' ' + child.text
                 if len (line_text) > 0:
                     pdf_index += 1
                     line_data.append (

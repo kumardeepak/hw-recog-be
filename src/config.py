@@ -5,9 +5,9 @@ DEBUG = True
 API_URL_PREFIX = "/api/v1"
 HOST = 'localhost'
 PORT = 6000
-FILE_STORAGE_PATH =  '/tmp/nginx' #'/home/dddhiraj/Documents/Tarento/Anuwad/Tabular_data_extraction/sample_images'# '/Users/kd/Workspace/python/github/data/input/' #
+FILE_STORAGE_PATH =  '/home/dddhiraj/Documents/Tarento/Anuwad/Tabular_data_extraction/sample_images'#'/tmp/nginx' '/Users/kd/Workspace/python/github/data/input/' #
 ENABLE_CORS = False
-LANGUAGE = 'hin+eng' #Specify language of document being passed
+LANGUAGE = 'hin' #Specify language of document being passed
 
 logging.basicConfig(
     filename=os.getenv("SERVICE_LOG", "server.log"),
