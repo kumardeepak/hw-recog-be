@@ -31,7 +31,7 @@ class OCRlineRepositories:
         self.number_of_digits = len(str(self.num_of_pages))
 
     def pdf_language_detect(self):
-        page_file         = self.pdf_to_image_dir + '/-' + self.page_num_correction (0) + '.jpg'
+        page_file         = self.pdf_to_image_dir + '_r/-' + self.page_num_correction (0) + '.jpg'
         osd               =  pytesseract.image_to_osd (page_file)
         language_script   =  osd.split('\nScript')[1][2:]
         self.pdf_language =  self.language_map[language_script]
