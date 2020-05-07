@@ -23,7 +23,7 @@ class OCRlineRepositories:
         self.pdf_to_image_dir  = 'tmp/images/' + self.pdf_name
         os.system('mkdir -p {0}_r'.format (self.pdf_to_image_dir))
         os.system('mkdir -p {0}_c'.format (self.pdf_to_image_dir))
-        convert_from_path(self.pdf_path,300,300, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
+        convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir))
         #convert_from_path(self.pdf_path , output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         
