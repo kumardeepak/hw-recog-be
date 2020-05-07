@@ -21,12 +21,13 @@ class OCRlineRepositories:
     def pdf_to_image(self):
         self.pdf_name = self.pdf_path.split('/')[-1].split('.')[0]
         self.pdf_to_image_dir  = 'tmp/images/' + self.pdf_name
-        os.system('mkdir -p {0}'.format (self.pdf_to_image_dir))
+        os.system('mkdir -p {0}_r'.format (self.pdf_to_image_dir))
+        os.system('mkdir -p {0}_c'.format (self.pdf_to_image_dir))
         convert_from_path(self.pdf_path,300,300, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir))
         #convert_from_path(self.pdf_path , output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         
-        self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '/*.png'))
+        self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '_c/*.png'))
         self.number_of_digits = len(str(self.num_of_pages))
 
     def pdf_language_detect(self):
@@ -94,8 +95,8 @@ class OCRlineRepositories:
     def line_metadata(self):
         pdf_index=0
         for page_num in range(self.num_of_pages):
-            page_file           = self.pdf_to_image_dir + '/-' + self.page_num_correction(page_num) + '.jpg'
-            table_detect_file   = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
+            page_file           = self.pdf_to_image_dir + '_r/-' + self.page_num_correction(page_num) + '.jpg'
+            table_detect_file   = self.pdf_to_image_dir + '_c/c' + self.page_num_correction(page_num,3) + '.png'
             print(table_detect_file,page_file)
             page_image              = self.mask_out_tables(table_detect_file, page_file)
             line_data, pdf_index    = self.line_parser(page_image, pdf_index)
