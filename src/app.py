@@ -15,4 +15,4 @@ for blueprint in vars(routes).values():
 
 if __name__ == "__main__":
     #print(server.url_map)
-    server.run(host=config.HOST, port=config.PORT, debug=True)
+    server.run(host=config.HOST, port=config.PORT, debug=False)
