@@ -5,7 +5,7 @@ import os
 import glob
 from repositories import TableRepositories
 from lxml import html
-
+import uuid
 
 class OCRlineRepositories:
 
@@ -20,18 +20,17 @@ class OCRlineRepositories:
 
     def pdf_to_image(self):
         self.pdf_name = self.pdf_path.split('/')[-1].split('.')[0]
-        self.pdf_to_image_dir  = 'tmp/images/' + self.pdf_name
-        os.system('mkdir -p {0}_r'.format (self.pdf_to_image_dir))
-        os.system('mkdir -p {0}_c'.format (self.pdf_to_image_dir))
-        convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir +'_r', fmt='jpeg', output_file='')
-        os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir + '_c'))
+        self.pdf_to_image_dir  = 'tmp/images/' + self.pdf_name + str(uuid.uuid1())
+        os.system('mkdir -p {0}'.format (self.pdf_to_image_dir))
+        convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
+        os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir))
         #convert_from_path(self.pdf_path , output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         
-        self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '_c/*.png'))
+        self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '/*.png'))
         self.number_of_digits = len(str(self.num_of_pages))
 
     def pdf_language_detect(self):
-        page_file         = self.pdf_to_image_dir + '_r/-' + self.page_num_correction (0) + '.jpg'
+        page_file         = self.pdf_to_image_dir + '/-' + self.page_num_correction (0) + '.jpg'
         osd               =  pytesseract.image_to_osd (page_file)
         language_script   =  osd.split('\nScript')[1][2:]
         self.pdf_language =  self.language_map[language_script]
@@ -95,8 +94,8 @@ class OCRlineRepositories:
     def line_metadata(self):
         pdf_index=0
         for page_num in range(self.num_of_pages):
-            page_file           = self.pdf_to_image_dir + '_r/-' + self.page_num_correction(page_num) + '.jpg'
-            table_detect_file   = self.pdf_to_image_dir + '_c/c' + self.page_num_correction(page_num,3) + '.png'
+            page_file           = self.pdf_to_image_dir + '/-' + self.page_num_correction(page_num) + '.jpg'
+            table_detect_file   = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
             print(table_detect_file,page_file)
             page_image              = self.mask_out_tables(table_detect_file, page_file)
             line_data, pdf_index    = self.line_parser(page_image, pdf_index)
@@ -106,5 +105,5 @@ class OCRlineRepositories:
             self.response['lines_data'].append(line_data)
 
     def delete_images(self):
-        os.system('rm -r {0}_r'.format(self.pdf_to_image_dir))
-        os.system('rm -r {0}_c'.format(self.pdf_to_image_dir))
+        os.system('rm -r {0}'.format(self.pdf_to_image_dir))
+        os.system('rm -r {0}'.format(self.pdf_to_image_dir))
