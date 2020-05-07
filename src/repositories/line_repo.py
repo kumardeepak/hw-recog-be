@@ -106,4 +106,5 @@ class OCRlineRepositories:
             self.response['lines_data'].append(line_data)
 
     def delete_images(self):
-        os.system('rm -r {0}'.format(self.pdf_to_image_dir))
+        os.system('rm -r {0}_r'.format(self.pdf_to_image_dir))
+        os.system('rm -r {0}_c'.format(self.pdf_to_image_dir))
