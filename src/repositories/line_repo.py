@@ -24,7 +24,7 @@ class OCRlineRepositories:
         os.system('mkdir -p {0}_r'.format (self.pdf_to_image_dir))
         os.system('mkdir -p {0}_c'.format (self.pdf_to_image_dir))
         convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir +'_r', fmt='jpeg', output_file='')
-        os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir))
+        os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir + '_c'))
         #convert_from_path(self.pdf_path , output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         
         self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '_c/*.png'))
