@@ -54,7 +54,7 @@ class OCRlineRepositories:
                 page_image [int (y):int (y + h), int (x):int (x + w)] = 255
         return page_image
 
-    def line_parser(self, page_image, pdf_index):
+    def line_parser(self, page_image, pdf_index,page_number):
         hocr       = pytesseract.image_to_pdf_or_hocr (page_image, lang=self.pdf_language, extension='hocr')
         tree       = html.fromstring (hocr)
         line_data  = []
@@ -76,7 +76,7 @@ class OCRlineRepositories:
                     page_index += 1
                     line_data.append (
                         {'x': left, 'y': top, 'height': height, 'text': str(line_text [1:]), 'page_index': page_index,
-                         'pdf_index': pdf_index})
+                         'pdf_index': pdf_index , 'page_no':page_number})
         return line_data, pdf_index
 
 
@@ -98,7 +98,7 @@ class OCRlineRepositories:
             table_detect_file   = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
             print(table_detect_file,page_file)
             page_image              = self.mask_out_tables(table_detect_file, page_file)
-            line_data, pdf_index    = self.line_parser(page_image, pdf_index)
+            line_data, pdf_index    = self.line_parser(page_image, pdf_index,page_num + 1)
 
             if self.response['resolution'] == None:
                 self.response['resolution'] = {'x':page_image.shape[1] , 'y':page_image.shape[0]}
