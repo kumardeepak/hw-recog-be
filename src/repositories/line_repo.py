@@ -6,6 +6,7 @@ import glob
 from repositories import TableRepositories
 from lxml import html
 import uuid
+import pandas as pd
 
 class OCRlineRepositories:
 
@@ -53,6 +54,26 @@ class OCRlineRepositories:
                 h = table ['h'] * y_scale
                 page_image [int (y):int (y + h), int (x):int (x + w)] = 255
         return page_image
+    
+    
+      
+    def sort_lines(self,group,len_groups,sorted_lines=[]):
+        while len(sorted_lines) < len_groups:
+            mean_semi_height = group['height'].mean() / 2.0
+            check_y          = group.iloc[0]['y']
+            same_line        = group[ abs(group['y'] - check_y) < mean_semi_height]
+            next_lines       = group[ abs(group['y'] - check_y) >= mean_semi_height]
+            #same_line.iloc[-1]['line_change'] = 1
+            sort_lines       = same_line.sort_values(by=['x'])
+
+            for index, row in sort_lines.iterrows():
+                sorted_lines.append(row.to_dict())
+            
+            #if len(next_lines) < 1:
+            #    break
+            self.sort_group(next_lines,len_groups,sorted_group)
+    
+        return sorted_lines
 
     def line_parser(self, page_image, pdf_index,page_number):
         hocr       = pytesseract.image_to_pdf_or_hocr (page_image, lang=self.pdf_language, extension='hocr')
@@ -72,11 +93,21 @@ class OCRlineRepositories:
                     if (len(child.text) > 0) & (child.text != ' '):
                         line_text += ' ' + child.text
                 if len (line_text) > 0:
-                    pdf_index  += 1
+                    #pdf_index  += 1
                     page_index += 1
                     line_data.append (
                         {'x': left, 'y': top, 'height': height, 'text': str(line_text [1:]), 'page_index': page_index,
                          'pdf_index': pdf_index , 'page_no':page_number})
+        if len(line_data) > 0 :
+            line_df = pd.DataFrame(line_data)
+            line_df = line_df.sort_values(by=['y'])
+            line_data = self.sort_lines(line_df,len(line_data),[])
+            
+            for index,line in enumerate(line_data):
+                line['page_index'] = index
+                line['pdf_index']  = pdf_index
+                pdf_index         += 1
+        
         return line_data, pdf_index
 
 
