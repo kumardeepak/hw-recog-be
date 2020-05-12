@@ -71,7 +71,7 @@ class OCRlineRepositories:
             
             #if len(next_lines) < 1:
             #    break
-            self.sort_lines(next_lines,len_groups,sorted_group)
+            self.sort_lines(next_lines,len_groups,sorted_lines)
     
         return sorted_lines
 
