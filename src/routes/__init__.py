@@ -1,1 +1,1 @@
-from .rect import RECT_BLUEPRINT
+from .aadhaar import AADHAAR_BLUEPRINT

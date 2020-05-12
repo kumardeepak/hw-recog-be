@@ -1,2 +1,2 @@
-from .rect  import RectRepositories
-from .table import TableRepositories
+from .aadhar import Aadhaar_exract
+from .bbox_tools import Box_cordinates

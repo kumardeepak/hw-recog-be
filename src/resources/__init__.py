@@ -1,1 +1,1 @@
-from .rect import RectResource
+from .aadhaar import AadharResource
