@@ -113,7 +113,7 @@ class Aadhaar_exract:
             self.image = imutils.rotate_bound (self.image, -angle)
             
             if rotations > 1 :
-                contours = cv2.findContours (self.image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                contours = cv2.findContours (cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
                 contours = contours [0] if len (contours) == 2 else contours [1]
                 if len(contours) > 1 :
                     x, y, w, h = cv2.boundingRect (contours[0])

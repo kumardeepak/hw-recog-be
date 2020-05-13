@@ -101,8 +101,6 @@ class Box_cordinates:
 
             group_text = ''
             for text_crop in sorted_grp:
-
-                print(text_crop)
                 if text_crop['height'] > mean_height * 0.7 :
                     cropped_portion = self.crop_im(text_crop,margin=5)
                     #plt.imsave(str(i)+ '.png' ,cropped_portion)
