@@ -113,7 +113,7 @@ class Box_cordinates:
             group_text = ''
             text_by_line =[]
             for text_crop in sorted_grp:
-                
+                line_text = ''
                 if text_crop['height'] > mean_height * 0.7 :
                     cropped_portion = self.crop_im(text_crop,margin=5)
                     #plt.imsave(str(i)+ '.png' ,cropped_portion)
@@ -122,11 +122,11 @@ class Box_cordinates:
                     if len(text) > 0 :
                         for index, row in text.iterrows():
                             detected_text = row['text']
-                            text_by_line.append(detected_text)
+                            line_text     = line_text + ' ' + detected_text
                             if type(detected_text) != str:
                                 detected_text = str(int(detected_text))
-                            
-                            group_text = group_text + ' ' + detected_text
+                        text_by_line.append(line_text)    
+                        group_text = group_text + ' ' + line_text
                             #print(row['text'] ,row['conf'])
 
             block_text[group_id] = {'text' : group_text , 'text_by_line':text_by_line}
