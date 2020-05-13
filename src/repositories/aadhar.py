@@ -122,10 +122,10 @@ class Aadhaar_exract:
             east_cor = self.east_output ()
             angle = self.get_rotaion_angle (east_cor)
             rotations += 1
-        bbox = Box_cordinates (east_cor)
-        upside_down = self.check_orientation (bbox.gr_cordinates)
+        bbox1 = Box_cordinates (east_cor)
+        upside_down = self.check_orientation (bbox1.gr_cordinates)
         if upside_down:
             self.image = imutils.rotate_bound (self.image, 180)
             east_cor = self.east_output ()
-        bbox = Box_cordinates (east_cor, 50, self.image)
-        self.text = bbox.get_text ()
+        bbox2 = Box_cordinates (east_cor, 50, self.image)
+        self.text = bbox2.get_text ()
