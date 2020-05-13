@@ -75,7 +75,7 @@ class Box_cordinates:
             y1 = same_line ['y1'].min ()
             x2 = same_line ['x3'].max ()
             y2 = same_line ['y3'].max ()
-
+            print(count_words ,len_groups,'words counted')
             line = {'x1' : x1,'y1':y1,'x2':x2,'y2':y2,'height':same_line['height'].mean()}
             sorted_group.append(line)
             self.sort_group (next_lines, len_groups, sorted_group, count_words)
@@ -103,7 +103,7 @@ class Box_cordinates:
             group_text = ''
             for text_crop in sorted_grp:
 
-                #print(text_crop)
+                print(text_crop)
                 if text_crop['height'] > mean_height * 0.7 :
                     cropped_portion = self.crop_im(text_crop,margin=5)
                     #plt.imsave(str(i)+ '.png' ,cropped_portion)
