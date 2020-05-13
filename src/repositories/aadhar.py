@@ -13,7 +13,7 @@ from repositories.bbox_tools import Box_cordinates
 # tesseract confidence
 # margin
 
-checkpoint_path = '/home/ubuntu/.models/east_icdar2015_resnet_v1_50_rbox/'
+checkpoint_path = '/home/dddhiraj/.models/east_icdar2015_resnet_v1_50_rbox/'
 
 tf.reset_default_graph ()
 input_images = tf.placeholder (tf.float32, shape=[None, None, None, 3], name='input_images')
@@ -58,12 +58,21 @@ class Aadhaar_exract:
 
                 # to avoid submitting errors
                 box = postprocess.sort_poly (box.astype (np.int32))
-                print(box)
+                #print(box)
                 if np.linalg.norm (box [0] - box [1]) < 5 or np.linalg.norm (box [3] - box [0]) < 5:
                     continue
                 out_put.append (
                     [box [0, 0], box [0, 1], box [1, 0], box [1, 1], box [2, 0], box [2, 1], box [3, 0], box [3, 1]])
         return out_put
+
+
+    def dump_out(self,bbc,rot):
+        im = self.image.copy()
+        for box in bbc:
+            print(box)
+            cv2.polylines(im, [np.array(box).astype(np.int32).reshape((-1, 1, 2))], True, color=(255, 255, 0), thickness=1)
+        cv2.imwrite('tmp/' + str(rot) + '.png' , im)
+
 
     def get_rotaion_angle(self, east_coordinates):
 
@@ -109,6 +118,7 @@ class Aadhaar_exract:
         east_cor = self.east_output ()
         angle = self.get_rotaion_angle (east_cor)
         rotations =  1
+        #self.dump_out(east_cor,rotations)
         # Orientation correction
         while abs (angle) > 2.5:
             self.image = imutils.rotate_bound (self.image, -angle)
@@ -120,13 +130,16 @@ class Aadhaar_exract:
                     x, y, w, h = cv2.boundingRect (contours[0])
                     print('cropped area reduced ')
                     self.image = self.image[y:y+h,x:x+w,:]
+                    
             east_cor = self.east_output ()
             angle = self.get_rotaion_angle (east_cor)
             rotations += 1
+            #self.dump_out(east_cor,rotations)
         bbox1 = Box_cordinates (east_cor)
         upside_down = self.check_orientation (bbox1.gr_cordinates)
         if upside_down:
             self.image = imutils.rotate_bound (self.image, 180)
             east_cor = self.east_output ()
+            #self.dump_out(east_cor,rotations)
         bbox2 = Box_cordinates (east_cor, 50, self.image)
         self.text = bbox2.get_text ()
