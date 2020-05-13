@@ -107,12 +107,20 @@ class Aadhaar_exract:
     def extract_text(self):
         east_cor = self.east_output ()
         angle = self.get_rotaion_angle (east_cor)
-
+        rotations =  1
         # Orientation correction
         while abs (angle) > 2.5:
             self.image = imutils.rotate_bound (self.image, -angle)
+            
+            if rotations > 1 :
+                contours = cv2.findContours (self.mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                contours = contours [0] if len (contours) == 2 else contours [1]
+                if len(contours) > 1 :
+                    x, y, w, h = cv2.boundingRect (contours[0])
+                    self.image = self.image[y:y+h,x:x+w,:]
             east_cor = self.east_output ()
             angle = self.get_rotaion_angle (east_cor)
+            rotations += 1
         bbox = Box_cordinates (east_cor)
         upside_down = self.check_orientation (bbox.gr_cordinates)
         if upside_down:
