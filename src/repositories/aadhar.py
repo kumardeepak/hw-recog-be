@@ -115,8 +115,9 @@ class Aadhaar_exract:
             if rotations > 1 :
                 contours = cv2.findContours (cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
                 contours = contours [0] if len (contours) == 2 else contours [1]
-                if len(contours) > 1 :
+                if len(contours) > 0 :
                     x, y, w, h = cv2.boundingRect (contours[0])
+                    print('cropped area reduced ')
                     self.image = self.image[y:y+h,x:x+w,:]
             east_cor = self.east_output ()
             angle = self.get_rotaion_angle (east_cor)

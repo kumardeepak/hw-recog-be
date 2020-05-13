@@ -2,7 +2,7 @@ from repositories import Aadhaar_exract
 #import json
 
 image_file =  '/home/dddhiraj/Documents/Tarento/Anuwad/EAST/input_images/60.png'
-
+#/home/ubuntu/apps/aadhar/backup/inputs
 #path_to_pdf= pdf_path_tel
 adhar_text = Aadhaar_exract(image_file)
 
