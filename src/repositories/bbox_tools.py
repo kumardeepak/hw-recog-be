@@ -65,22 +65,21 @@ class Box_cordinates:
 
     
     def sort_group(self,group,len_groups,sorted_group=[],count_words =0):
-        while count_words < len_groups:
-            print(count_words)
-            mean_semi_height = group['height'].mean() / 2.0
-            check_ymid       = group.iloc[0]['ymid']
-            same_line        = group[ abs(group['ymid'] - check_ymid) <= mean_semi_height]
-            next_lines       = group[ abs(group['ymid'] - check_ymid) > mean_semi_height]
-            count_words     += len(same_line)
-            x1 = same_line ['x1'].min ()
-            y1 = same_line ['y1'].min ()
-            x2 = same_line ['x3'].max ()
-            y2 = same_line ['y3'].max ()
-            print(count_words ,len_groups,'words counted')
-            line = {'x1' : x1,'y1':y1,'x2':x2,'y2':y2,'height':same_line['height'].mean()}
-            sorted_group.append(line)
-            if len(next_lines) < 1 :
-                break
+        #while count_words < len_groups:
+        print(count_words)
+        mean_semi_height = group['height'].mean() / 2.0
+        check_ymid       = group.iloc[0]['ymid']
+        same_line        = group[ abs(group['ymid'] - check_ymid) < mean_semi_height]
+        next_lines       = group[ abs(group['ymid'] - check_ymid) >= mean_semi_height]
+        count_words     += len(same_line)
+        x1 = same_line ['x1'].min ()
+        y1 = same_line ['y1'].min ()
+        x2 = same_line ['x3'].max ()
+        y2 = same_line ['y3'].max ()
+        print(count_words ,len_groups,'words counted')
+        line = {'x1' : x1,'y1':y1,'x2':x2,'y2':y2,'height':same_line['height'].mean()}
+        sorted_group.append(line)
+        if len(next_lines) > 0 :
             self.sort_group (next_lines, len_groups, sorted_group, count_words)
 
         return sorted_group
