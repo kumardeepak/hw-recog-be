@@ -22,6 +22,7 @@ class Box_cordinates:
         df['height'] = df['y4'] - df['y1']
         df['width']  = df['x2'] - df['x1']
         df['ymid']   = (df['y4'] + df['y3']) * 0.5
+        df['area']   = df['width'] * df['height']
         df = df.sort_values(by=['ymid'])
         df['group']  =  None
         df['line_change'] = 0
@@ -74,15 +75,25 @@ class Box_cordinates:
         y1 = same_line ['y1'].min ()
         x2 = same_line ['x3'].max ()
         y2 = same_line ['y3'].max ()
-        line = {'x1' : x1,'y1':y1,'x2':x2,'y2':y2,'height':same_line['height'].mean()}
-        sorted_group.append(line)
+        line = {'x1' : x1,'y1':y1,'x2':x2,'y4':y2,'height':same_line['height'].mean()}
+        
+        sum_area = same_line['area'].sum()
+        block_area = (x2 - x1 ) * (y2 -y1)
+        
+        if (sum_area / block_area) > 0.5 :
+            sorted_group.append(line)
+        else :
+            sort_lines       = same_line.sort_values(by=['x1'])
+            for index, row in sort_lines.iterrows():
+                sorted_group.append(row)
+        
         if len(next_lines) > 0 :
             self.sort_group (next_lines, len_groups, sorted_group)
 
         return sorted_group
 
     def crop_im(self ,row ,margin=5):
-        crop = self.image[row['y1']- margin : row['y2'] + margin , row['x1'] -margin : row['x2'] + margin]
+        crop = self.image[row['y1']- margin : row['y4'] + margin , row['x1'] -margin : row['x2'] + margin]
         return crop
     
 
