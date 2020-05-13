@@ -79,6 +79,8 @@ class Box_cordinates:
             print(count_words ,len_groups,'words counted')
             line = {'x1' : x1,'y1':y1,'x2':x2,'y2':y2,'height':same_line['height'].mean()}
             sorted_group.append(line)
+            if len(next_lines) < 1 :
+                break
             self.sort_group (next_lines, len_groups, sorted_group, count_words)
 
         return sorted_group
