@@ -64,26 +64,26 @@ class Box_cordinates:
         return median
 
     
-    def sort_group(self,group,len_groups,sorted_group=[]):
-        while len(sorted_group) < len_groups:
+    def sort_group(self,group,len_groups,sorted_group=[],count_words =0):
+        while count_words < len_groups:
             mean_semi_height = group['height'].mean() / 2.0
             check_ymid       = group.iloc[0]['ymid']
             same_line        = group[ abs(group['ymid'] - check_ymid) < mean_semi_height]
             next_lines       = group[ abs(group['ymid'] - check_ymid) >= mean_semi_height]
-            #same_line.iloc[-1]['line_change'] = 1
-            sort_lines       = same_line.sort_values(by=['x1'])
+            count_words     += len(same_line)
+            x1 = same_line ['x1'].min ()
+            y1 = same_line ['y1'].min ()
+            x2 = same_line ['x3'].max ()
+            y2 = same_line ['y3'].max ()
 
-            for index, row in sort_lines.iterrows():
-                sorted_group.append(row)
-            
-            #if len(next_lines) < 1:
-            #    break
-            self.sort_group(next_lines,len_groups,sorted_group)
-    
+            line = {'x1' : x1,'y1':y1,'x2':x2,'y2':y2,'height':same_line['height'].mean()}
+            sorted_group.append(line)
+            self.sort_group (next_lines, len_groups, sorted_group, count_words)
+
         return sorted_group
 
     def crop_im(self ,row ,margin=5):
-        crop = self.image[row['y1']- margin : row['y4'] + margin , row['x1'] -margin : row['x2'] + margin]
+        crop = self.image[row['y1']- margin : row['y2'] + margin , row['x1'] -margin : row['x2'] + margin]
         return crop
     
 
@@ -95,7 +95,7 @@ class Box_cordinates:
         for group_id in self.df['group'].unique():
             group             = self.df[self.df['group'] == group_id]
             avrage_height     = int(group['height'].mean())
-            sorted_grp        = self.sort_group(group,len(group),[])
+            sorted_grp        = self.sort_group(group,len(group),[],0)
             smooth_image      = self.image #self.open_minus_image(self.image , np.ones((avrage_height *4 , avrage_height*4)))
             
 
