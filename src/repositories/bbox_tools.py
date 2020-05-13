@@ -114,7 +114,7 @@ class Box_cordinates:
             text_by_line =[]
             for text_crop in sorted_grp:
                 line_text = ''
-                if text_crop['height'] > mean_height * 0.7 :
+                if text_crop['height'] > mean_height * 0.5 :
                     cropped_portion = self.crop_im(text_crop,margin=5)
                     #plt.imsave(str(i)+ '.png' ,cropped_portion)
                     text = pytesseract.image_to_data(cropped_portion,config='--psm 7', lang='eng',output_type=Output.DATAFRAME)
