@@ -122,9 +122,10 @@ class Box_cordinates:
                     if len(text) > 0 :
                         for index, row in text.iterrows():
                             detected_text = row['text']
-                            line_text     = line_text + ' ' + detected_text
+                            
                             if type(detected_text) != str:
                                 detected_text = str(int(detected_text))
+                            line_text     = line_text + ' ' + detected_text
                         text_by_line.append(line_text)    
                         group_text = group_text + ' ' + line_text
                             #print(row['text'] ,row['conf'])
