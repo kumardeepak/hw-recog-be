@@ -58,6 +58,7 @@ class Aadhaar_exract:
 
                 # to avoid submitting errors
                 #box = postprocess.sort_poly (box.astype (np.int32))
+                box = box.astype (np.int32)
                 print(box)
                 if np.linalg.norm (box [0] - box [1]) < 5 or np.linalg.norm (box [3] - box [0]) < 5:
                     continue
