@@ -13,7 +13,7 @@ from repositories.bbox_tools import Box_cordinates
 # tesseract confidence
 # margin
 
-checkpoint_path = '/home/dddhiraj/.models/east_icdar2015_resnet_v1_50_rbox/'
+checkpoint_path = '/home/ubuntu/.models/east_icdar2015_resnet_v1_50_rbox/'
 
 tf.reset_default_graph ()
 input_images = tf.placeholder (tf.float32, shape=[None, None, None, 3], name='input_images')
