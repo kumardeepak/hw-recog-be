@@ -35,7 +35,7 @@ class Box_cordinates:
         for index, row in self.df.iterrows():
             height = row['height']
             ymid   = row['ymid']    
-            if  abs(ymid - check_ymid) < (height *1.5)  :
+            if  abs(ymid - check_ymid) < (height *1.75)  :
                 self.df['group'][index] = group
             else:
                 group += 1
@@ -111,8 +111,9 @@ class Box_cordinates:
 
 
             group_text = ''
+            text_by_line =[]
             for text_crop in sorted_grp:
-                text_by_line =[]
+                
                 if text_crop['height'] > mean_height * 0.7 :
                     cropped_portion = self.crop_im(text_crop,margin=5)
                     #plt.imsave(str(i)+ '.png' ,cropped_portion)
