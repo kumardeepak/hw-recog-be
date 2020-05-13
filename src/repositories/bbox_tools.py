@@ -35,7 +35,7 @@ class Box_cordinates:
         for index, row in self.df.iterrows():
             height = row['height']
             ymid   = row['ymid']    
-            if  (ymid - check_ymid) < (height *2)  :
+            if  abs(ymid - check_ymid) < (height *1.5)  :
                 self.df['group'][index] = group
             else:
                 group += 1
