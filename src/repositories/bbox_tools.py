@@ -66,6 +66,7 @@ class Box_cordinates:
     
     def sort_group(self,group,len_groups,sorted_group=[],count_words =0):
         while count_words < len_groups:
+            print(count_words)
             mean_semi_height = group['height'].mean() / 2.0
             check_ymid       = group.iloc[0]['ymid']
             same_line        = group[ abs(group['ymid'] - check_ymid) < mean_semi_height]
