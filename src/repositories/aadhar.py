@@ -31,7 +31,7 @@ saver.restore (sess, model_path)
 class Aadhaar_exract:
 
     def __init__(self, image_path, session=sess):
-        self.image    = cv2.imread (image_path)
+        self.image    = cv2.imread (image_path)[:, :, ::-1]
         self.sess     = session
         self.timer    = {'net': 0, 'restore': 0, 'nms': 0}
         self.text     = {}
@@ -57,8 +57,7 @@ class Aadhaar_exract:
             for box in boxes:
 
                 # to avoid submitting errors
-                #box = postprocess.sort_poly (box.astype (np.int32))
-                box = box.astype (np.int32)
+                box = postprocess.sort_poly (box.astype (np.int32))
                 print(box)
                 if np.linalg.norm (box [0] - box [1]) < 5 or np.linalg.norm (box [3] - box [0]) < 5:
                     continue
