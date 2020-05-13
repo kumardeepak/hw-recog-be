@@ -5,7 +5,7 @@ DEBUG = True
 API_URL_PREFIX = "/api/v1"
 HOST = '0.0.0.0'
 PORT = 5000
-FILE_STORAGE_PATH = '/home/ubuntu/apps/aadhar/backup/inputs'#"/opt/share/nginx/upload"
+FILE_STORAGE_PATH = "/opt/share/nginx/upload"
 ENABLE_CORS = False
 #LANGUAGE = 'hin' #Specify language of document being passed
 
