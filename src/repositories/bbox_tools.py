@@ -2,6 +2,7 @@ import cv2
 import pandas as pd
 import pytesseract
 from pytesseract import Output
+import numpy as np
 
 
 class Box_cordinates:
