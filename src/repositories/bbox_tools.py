@@ -80,18 +80,20 @@ class Box_cordinates:
         y1 = same_line ['y1'].min ()
         x2 = same_line ['x3'].max ()
         y2 = same_line ['y3'].max ()
-        line = {'x1' : x1,'y1':y1,'x2':x2,'y4':y2,'height':same_line['height'].mean()}
+        line = {'x1' : x1,'y1':y1,'x2':x2,'y4':y2,'height':same_line['height'].mean(),'fragmented':False}
         
         sum_area = same_line['area'].sum()
         block_area = (x2 - x1 ) * (y2 -y1)
         #print(same_line)
         if ((sum_area / block_area) < 0.5) or (len(same_line) < 3) :
-             sort_lines       = same_line.sort_values(by=['x1'])
-             for index, row in sort_lines.iterrows():
-                 sorted_group.append(row)
+            fragments = []
+            sort_lines       = same_line.sort_values(by=['x1'])
+            for index, row in sort_lines.iterrows():
+                fragments.append(row)
+            line = {'fragmented':True , 'fragments':fragments}
             
-        else :
-            sorted_group.append(line)
+
+        sorted_group.append(line)
         
         if len(next_lines) > 0 :
             self.sort_group (next_lines, len_groups, sorted_group)
@@ -122,20 +124,38 @@ class Box_cordinates:
             for text_crop in sorted_grp:
                 line_text = ''
                 if text_crop['height'] > mean_height * 0.5 :
-                    cropped_portion = self.crop_im(text_crop,margin=5)
-                    #plt.imsave(str(i)+ '.png' ,cropped_portion)
-                    text = pytesseract.image_to_data(cropped_portion,config='--psm 7', lang='eng',output_type=Output.DATAFRAME)
-                    text = text[text['conf'] >self.conf_threshold]
-                    if len(text) > 0 :
-                        for index, row in text.iterrows():
-                            detected_text = row['text']
-                            
-                            if type(detected_text) != str:
-                                detected_text = str(int(detected_text))
-                            line_text     = line_text + ' ' + detected_text
+                    if text_crop['fragmented'] :
+                        for word in text_crop['fragments']:
+                            cropped_portion = self.crop_im(word,margin=5)
+                            text = pytesseract.image_to_data(cropped_portion,config='--psm 7', lang='eng',output_type=Output.DATAFRAME)
+                            text = text[text['conf'] >self.conf_threshold]
+                            if len(text) > 0 :
+                                for index, row in text.iterrows():
+                                    detected_text = row['text']
+                                    
+                                    if type(detected_text) != str:
+                                        detected_text = str(int(detected_text))
+                                    line_text     = line_text + ' ' + detected_text
                         text_by_line.append(line_text)    
                         group_text = group_text + ' ' + line_text
-                            #print(row['text'] ,row['conf'])
+                            
+                            
+                    
+                    
+                    else :
+                        cropped_portion = self.crop_im(text_crop,margin=5)
+                        text = pytesseract.image_to_data(cropped_portion,config='--psm 7', lang='eng',output_type=Output.DATAFRAME)
+                        text = text[text['conf'] >self.conf_threshold]
+                        if len(text) > 0 :
+                            for index, row in text.iterrows():
+                                detected_text = row['text']
+                                
+                                if type(detected_text) != str:
+                                    detected_text = str(int(detected_text))
+                                line_text     = line_text + ' ' + detected_text
+                            text_by_line.append(line_text)    
+                            group_text = group_text + ' ' + line_text
+                                #print(row['text'] ,row['conf'])
 
             block_text[group_id] = {'text' : group_text , 'text_by_line':text_by_line}
 
