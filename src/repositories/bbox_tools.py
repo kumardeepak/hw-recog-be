@@ -90,7 +90,7 @@ class Box_cordinates:
             sort_lines       = same_line.sort_values(by=['x1'])
             for index, row in sort_lines.iterrows():
                 fragments.append(row)
-            line = {'fragmented':True , 'fragments':fragments}
+            line = {'fragmented':True , 'fragments':fragments ,'height':same_line['height'].mean()}
             
 
         sorted_group.append(line)
