@@ -9,8 +9,8 @@ class Box_cordinates:
         self.bbox             = bbox
         self.image            = image
         if type(self.image) != None :
-            self.image = cv2.medianBlur(self.image,3)
-            self.image = cv2.GaussianBlur(self.image,(5,5),0)
+            median = cv2.medianBlur(self.image,3)
+            self.image = cv2.GaussianBlur(median,(5,5),0)
         self.conf_threshold   = conf_threshold
         self.convert_to_df()
         self.group_by_spacing()
