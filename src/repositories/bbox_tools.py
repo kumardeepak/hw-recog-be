@@ -8,10 +8,10 @@ class Box_cordinates:
     def __init__(self, bbox, conf_threshold=50, image=None):
         self.bbox             = bbox
         self.image            = image
-        if type(self.image) != None :
+        #if type(self.image) != None :
             #median = cv2.medianBlur(self.image,3)
             #self.image = cv2.GaussianBlur(median,(5,5))
-            self.image = cv2.bilateralFilter(self.image.astype(np.int8),9,75,75)
+            #self.image = cv2.bilateralFilter(self.image.astype(np.int8),9,75,75)
         self.conf_threshold   = conf_threshold
         self.convert_to_df()
         self.group_by_spacing()
@@ -106,11 +106,12 @@ class Box_cordinates:
         block_text ={}
         ignore_text = [' ' ,'']
         mean_height = self.df['height'].mean()
+        smooth_image      = cv2.bilateralFilter(self.image.astype(np.int8),9,75,75)
         for group_id in self.df['group'].unique():
             group             = self.df[self.df['group'] == group_id]
             avrage_height     = int(group['height'].mean())
             sorted_grp        = self.sort_group(group,len(group),[])
-            smooth_image      = self.image #self.open_minus_image(self.image , np.ones((avrage_height *4 , avrage_height*4)))
+            #self.image #self.open_minus_image(self.image , np.ones((avrage_height *4 , avrage_height*4)))
             
 
 
