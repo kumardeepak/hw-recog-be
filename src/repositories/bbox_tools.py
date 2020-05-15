@@ -8,7 +8,7 @@ class Box_cordinates:
     def __init__(self, bbox, conf_threshold=50, image=None):
         self.bbox             = bbox
         self.image            = image
-        if self.image :
+        if type(self.image) != None :
             self.image = cv2.medianBlur(self.image,3)
         self.conf_threshold   = conf_threshold
         self.convert_to_df()
