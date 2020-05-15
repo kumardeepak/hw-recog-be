@@ -110,7 +110,7 @@ class Box_cordinates:
         block_text ={}
         ignore_text = [' ' ,'']
         mean_height = self.df['height'].mean()
-        smooth_image      = cv2.bilateralFilter(self.image,9,75,75)
+        smooth_image      = self.image #cv2.bilateralFilter(self.image,9,75,75)
         for group_id in self.df['group'].unique():
             group             = self.df[self.df['group'] == group_id]
             avrage_height     = int(group['height'].mean())
