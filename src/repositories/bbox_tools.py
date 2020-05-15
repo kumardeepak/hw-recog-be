@@ -84,7 +84,7 @@ class Box_cordinates:
         
         sum_area = same_line['area'].sum()
         block_area = (x2 - x1 ) * (y2 -y1)
-        
+        print(same_line)
         if ((sum_area / block_area) > 0.5) or (len(same_line) >  2) :
             sorted_group.append(line)
         else :
