@@ -84,13 +84,14 @@ class Box_cordinates:
         
         sum_area = same_line['area'].sum()
         block_area = (x2 - x1 ) * (y2 -y1)
-        print(same_line)
-        if ((sum_area / block_area) > 0.5) or (len(same_line) >  2) :
-            sorted_group.append(line)
+        #print(same_line)
+        if ((sum_area / block_area) < 0.5) or (len(same_line) < 3) :
+             sort_lines       = same_line.sort_values(by=['x1'])
+             for index, row in sort_lines.iterrows():
+                 sorted_group.append(row)
+            
         else :
-            sort_lines       = same_line.sort_values(by=['x1'])
-            for index, row in sort_lines.iterrows():
-                sorted_group.append(row)
+            sorted_group.append(line)
         
         if len(next_lines) > 0 :
             self.sort_group (next_lines, len_groups, sorted_group)
