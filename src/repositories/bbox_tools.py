@@ -126,7 +126,7 @@ class Box_cordinates:
                 if text_crop['height'] > mean_height * 0.5 :
                     if text_crop['fragmented'] :
                         for word in text_crop['fragments']:
-                            cropped_portion = self.crop_im(word,margin=5)
+                            cropped_portion = self.crop_im(word,margin=10)
                             text = pytesseract.image_to_data(cropped_portion,config='--psm 7', lang='eng',output_type=Output.DATAFRAME)
                             text = text[text['conf'] >self.conf_threshold]
                             if len(text) > 0 :
