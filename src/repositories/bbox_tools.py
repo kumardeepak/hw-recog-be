@@ -11,7 +11,7 @@ class Box_cordinates:
         if type(self.image) != None :
             #median = cv2.medianBlur(self.image,3)
             #self.image = cv2.GaussianBlur(median,(5,5))
-            self.image = cv2.bilateralFilter(self.image,9,75,75)
+            self.image = cv2.bilateralFilter(self.image.astype(np.int8),9,75,75)
         self.conf_threshold   = conf_threshold
         self.convert_to_df()
         self.group_by_spacing()
