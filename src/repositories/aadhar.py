@@ -8,6 +8,7 @@ import pytesseract
 from repositories.east_utils import model
 from repositories.east_utils import postprocess
 from repositories.bbox_tools import Box_cordinates
+from repositories.text_postprocessing import Text_to_json
 
 # margin
 # tesseract confidence
@@ -142,4 +143,6 @@ class Aadhaar_exract:
             east_cor = self.east_output ()
             #self.dump_out(east_cor,rotations)
         bbox2 = Box_cordinates (east_cor, 50, self.image)
-        self.text = bbox2.get_text ()
+        text_dic = bbox2.get_text ()
+        #added text text_postprocessing
+        self.text = Text_to_json(text_dic).metadata

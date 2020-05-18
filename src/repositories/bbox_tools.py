@@ -20,10 +20,10 @@ class Box_cordinates:
 
     
     def convert_to_df(self):
-        dic = []
-        for i,box in enumerate(self.bbox):
-            dic.append({'x1': box[0] ,'y1': box[1] ,'x2': box[2] ,'y2': box[3] ,'x3': box[4] ,'y3': box[5] ,'x4': box[6] ,'y4': box[7]})
-        df = pd.DataFrame(dic)
+        #dic = []
+        #for i,box in enumerate(self.bbox):
+            #dic.append({'x1': box[0] ,'y1': box[1] ,'x2': box[2] ,'y2': box[3] ,'x3': box[4] ,'y3': box[5] ,'x4': box[6] ,'y4': box[7]})
+        df = pd.DataFrame(self.bbox,columns=['x1','y1','x2','y2','x3','y3','x4','y4'])
         df['height'] = df['y4'] - df['y1']
         df['width']  = df['x2'] - df['x1']
         df['ymid']   = (df['y4'] + df['y3']) * 0.5
