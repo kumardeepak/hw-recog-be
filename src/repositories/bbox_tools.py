@@ -163,7 +163,7 @@ class Box_cordinates:
                                 #print(row['text'] ,row['conf'])
 
             block_text[group_id] = {'text' : ' '.join(text_by_line) , 'text_by_line':text_by_line}
-        block_text['avrage_confidence'] = mean(conf)
+        block_text['avrage_confidence'] = np.mean(conf)
         return block_text
 
 
