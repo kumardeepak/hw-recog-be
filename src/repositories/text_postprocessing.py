@@ -44,9 +44,9 @@ class Text_to_json:
                 
                 break
                 
-         self.metadata['name'] = name
-         self.metadata['DOB']  = DOB
-         self.metadata['gender'] = gender
+        self.metadata['name'] = name
+        self.metadata['DOB']  = DOB
+        self.metadata['gender'] = gender
         #return name ,DOB,gender
 
 
