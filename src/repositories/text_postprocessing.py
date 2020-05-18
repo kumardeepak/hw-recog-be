@@ -7,7 +7,7 @@ import re
 class Text_to_json:
     
     def __init__(self,dic):
-        self.text_df = pd.DataFrame.from_dict(imgs[3],orient='index')
+        self.text_df = pd.DataFrame.from_dict(dic,orient='index')
         self.metadata = {}
         self.get_name_dob_gender()
         self.get_aadhar_no()
