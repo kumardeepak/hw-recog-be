@@ -128,35 +128,35 @@ class Box_cordinates:
                             text = pytesseract.image_to_data(cropped_portion,config='--psm 7', lang='eng',output_type=Output.DATAFRAME)
                             text = text[text['conf'] >self.conf_threshold]
                             if len(text) > 0 :
-                                '''
-                                #for index, row in text.iterrows():
-                                    #detected_text = row['text']
+                                
+                                for index, row in text.iterrows():
+                                    detected_text = row['text']
                                     
-                                    #if type(detected_text) != str:
-                                        #detected_text = str(int(detected_text))
-                                    #line_text     = line_text + ' ' + detected_text
-                                '''
-                                text = text['text'].astype(str)
-                                line_text = ' '.join(text.values)
+                                    if type(detected_text) != str:
+                                        detected_text = str(int(detected_text))
+                                    line_text     = line_text + ' ' + detected_text
+                              
+                        #text = text['text'].astype(str)
+                        #line_text = ' '.join(text.values)
                             
-                                text_by_line.append(line_text)    
-                                #group_text = group_text + ' ' + line_text
+                        text_by_line.append(line_text)    
+                        #group_text = group_text + ' ' + line_text
                             
                     else :
                         cropped_portion = self.crop_im(text_crop,margin=5)
                         text = pytesseract.image_to_data(cropped_portion,config='--psm 7', lang='eng',output_type=Output.DATAFRAME)
                         text = text[text['conf'] >self.conf_threshold]
                         if len(text) > 0 :
-                            '''
-                            #for index, row in text.iterrows():
-                                #detected_text = row['text']
+                            
+                            for index, row in text.iterrows():
+                                detected_text = row['text']
                                 
-                                #if type(detected_text) != str:
-                                    #detected_text = str(int(detected_text))
-                                #line_text     = line_text + ' ' + detected_text
-                            '''
-                            text = text['text'].astype(str)
-                            line_text = ' '.join(text.values)
+                                if type(detected_text) != str:
+                                    detected_text = str(int(detected_text))
+                                line_text     = line_text + ' ' + detected_text
+                            
+                            #text = text['text'].astype(str)
+                            #line_text = ' '.join(text.values)
                             text_by_line.append(line_text)    
                             #group_text = group_text + ' ' + line_text
                                 #print(row['text'] ,row['conf'])
