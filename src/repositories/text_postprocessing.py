@@ -20,7 +20,7 @@ class Text_to_json:
         gender = 'unable to detect'
         for index,row in self.text_df.iterrows():
             if 'DOB' in row['text'] :
-                print(row['text_by_line'])
+                #print(row['text_by_line'])
                 index = 0
                 for index ,text in enumerate(row['text_by_line']):
                     if 'DOB' in text:
