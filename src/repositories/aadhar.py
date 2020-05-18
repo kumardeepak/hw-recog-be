@@ -143,6 +143,6 @@ class Aadhaar_exract:
             east_cor = self.east_output ()
             #self.dump_out(east_cor,rotations)
         bbox2 = Box_cordinates (east_cor, 50, self.image)
-        text_dic,conf = bbox2.get_text ()
+        text_dic,avrage_confidence = bbox2.get_text ()
         #added text text_postprocessing
-        self.text = {'metadata': Text_to_json(text_dic).metadata , 'text':[text_dic] , 'avrage_confidence':conf}
+        self.text = {'metadata': Text_to_json(text_dic).metadata , 'text':[text_dic] , 'avrage_confidence':avrage_confidence}
