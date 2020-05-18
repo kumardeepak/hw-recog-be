@@ -108,6 +108,7 @@ class Box_cordinates:
     def get_text(self):
         
         block_text ={}
+        conf =[]
         ignore_text = [' ' ,'']
         mean_height = self.df['height'].mean()
         smooth_image      = cv2.bilateralFilter(self.image,9,75,75)
@@ -131,7 +132,7 @@ class Box_cordinates:
                                 
                                 for index, row in text.iterrows():
                                     detected_text = row['text']
-                                    
+                                    conf.append[row['conf']
                                     if type(detected_text) != str:
                                         detected_text = str(int(detected_text))
                                     line_text     = line_text + ' ' + detected_text
@@ -150,7 +151,7 @@ class Box_cordinates:
                             
                             for index, row in text.iterrows():
                                 detected_text = row['text']
-                                
+                                conf.append[row['conf']
                                 if type(detected_text) != str:
                                     detected_text = str(int(detected_text))
                                 line_text     = line_text + ' ' + detected_text
@@ -162,7 +163,7 @@ class Box_cordinates:
                                 #print(row['text'] ,row['conf'])
 
             block_text[group_id] = {'text' : ' '.join(text_by_line) , 'text_by_line':text_by_line}
-
+        block_text['avrage_confidence'] = mean(conf)
         return block_text
 
 
