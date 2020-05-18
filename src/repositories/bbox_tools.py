@@ -132,7 +132,7 @@ class Box_cordinates:
                                 
                                 for index, row in text.iterrows():
                                     detected_text = row['text']
-                                    conf.append[row['conf']
+                                    conf.append[row['conf']]
                                     if type(detected_text) != str:
                                         detected_text = str(int(detected_text))
                                     line_text     = line_text + ' ' + detected_text
@@ -151,7 +151,7 @@ class Box_cordinates:
                             
                             for index, row in text.iterrows():
                                 detected_text = row['text']
-                                conf.append[row['conf']
+                                conf.append[row['conf']]
                                 if type(detected_text) != str:
                                     detected_text = str(int(detected_text))
                                 line_text     = line_text + ' ' + detected_text
