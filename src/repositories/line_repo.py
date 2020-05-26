@@ -115,12 +115,12 @@ class OCRlineRepositories:
             line= {}
             same_line          =  df[df['line_key'] == uinqe_line]
             line['text']       = ' '.join(same_line['text'].values)
-            line['top']        = same_line['top'].min()
-            line['left']       = same_line['left'].min()
-            line['height']     = same_line['height'].max()
-            line['block_num']  = same_line['block_num'].iloc[0]
-            line['par_num']    = same_line['par_num'].iloc[0]
-            line['line_num']   = same_line['line_num'].iloc[0]
+            line['top']        = int(same_line['top'].min())
+            line['left']       = int(same_line['left'].min())
+            line['height']     = int(same_line['height'].max())
+            line['block_num']  = int(same_line['block_num'].iloc[0])
+            line['par_num']    = int(same_line['par_num'].iloc[0])
+            line['line_num']   = int(same_line['line_num'].iloc[0])
             line['pdf_index']  = pdf_index
             line['page_no']    = page_number
             line['avrage_conf']       = same_line['conf'].mean()
