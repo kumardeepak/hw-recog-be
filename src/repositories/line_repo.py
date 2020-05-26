@@ -124,7 +124,7 @@ class OCRlineRepositories:
             line['line_num']   = int(same_line['line_num'].iloc[0])
             line['pdf_index']  = pdf_index
             line['page_no']    = page_number
-            line['avrage_conf']       = same_line['conf'].mean()
+            line['avrage_conf']       = float(same_line['conf'].mean())
 
             pdf_index         += 1
 
