@@ -76,7 +76,7 @@ class OCRlineRepositories:
 
 
     def sorted_lines_data(self,group,len_groups,lines=[],page_index=1):
-        print(group.head())
+        #print(group.head())
         mean_semi_height = group['height'].mean() / 2.0
         check_y          = group.iloc[0]['top']
         same_line        = group[ abs(group['top'] - check_y) < mean_semi_height]
