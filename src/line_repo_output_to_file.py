@@ -12,7 +12,7 @@ output_dir   = '/home/dddhiraj' #'/home/dddhiraj/Documents/Tarento/data/rajyasab
 
 #path_to_pdf= pdf_path_tel
 
-line_parser = OCRlineRepositories(path_to_pdf)
+line_parser = OCRlineRepositories(path_to_pdf,version='v2')
 response = line_parser.response
 
 
@@ -20,7 +20,7 @@ file_name = path_to_pdf.split('/')[-1].split('.')[0]
 output_file = output_dir + '/' + file_name + '.json'
 
 print(response)
-
+json.dumps(response)
 with open(output_file, "w", encoding='utf8') as write_file:
     json.dump(response, write_file,ensure_ascii=False )
 

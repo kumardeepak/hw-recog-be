@@ -128,7 +128,7 @@ class OCRlineRepositories:
 
             pdf_index         += 1
 
-            line['page_line_index_absolute'] = same_line['page_line_index_absolute'].iloc[0]
+            line['page_line_index_absolute'] = int(same_line['page_line_index_absolute'].iloc[0])
             lines_data.append(line)
 
         return lines_data , pdf_index
