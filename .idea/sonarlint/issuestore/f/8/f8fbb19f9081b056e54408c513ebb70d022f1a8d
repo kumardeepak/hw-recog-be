@@ -1,0 +1,9 @@
+
+kpython:S1226w"LIntroduce a new variable or use its initial value before reassigning 'self'.(˜ë£ç8ŒŒ—‚¥.
+6python:S125d"Remove this commented out code.(üô†½
+qpython:S3776R"TRefactor this function to reduce its Cognitive Complexity from 16 to the 15 allowed.(Ğæºúÿÿÿÿ
+_python:S3827y"@img is not defined. Change its name or define it before using it(üÌü²8Ò‹˜‚¥.
+kpython:S1226w"LIntroduce a new variable or use its initial value before reassigning 'self'.(˜ë£ç8ŒŒ—‚¥.
+;python:S125C"Remove this commented out code.(ÿ—¾øøÿÿÿÿ
+zpython:S5717="]Change this default value to "None" and initialize this parameter inside the function/method.(°¡Ğ˜øÿÿÿÿ
+6python:S125Z"Remove this commented out code.(®‚‘

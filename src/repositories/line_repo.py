@@ -1,4 +1,5 @@
 import pytesseract
+from pytesseract import Output
 import cv2
 from pdf2image import convert_from_path
 import os
@@ -26,7 +27,7 @@ class OCRlineRepositories:
         convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
         os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir))
         #convert_from_path(self.pdf_path , output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
-        
+
         self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '/*.png'))
         self.number_of_digits = len(str(self.num_of_pages))
 
@@ -54,28 +55,86 @@ class OCRlineRepositories:
                 h = table ['h'] * y_scale
                 page_image [int (y):int (y + h), int (x):int (x + w)] = 255
         return page_image
-    
-    
-      
-    def sort_lines(self,group,len_groups,sorted_lines=[]):
+
+
+
+    def sorted_lines(self,group,len_groups,sorted_lines=[],page_index=1):
         while len(sorted_lines) < len_groups:
             mean_semi_height = group['height'].mean() / 2.0
             check_y          = group.iloc[0]['y']
             same_line        = group[ abs(group['y'] - check_y) < mean_semi_height]
             next_lines       = group[ abs(group['y'] - check_y) >= mean_semi_height]
             #same_line.iloc[-1]['line_change'] = 1
-            sort_lines       = same_line.sort_values(by=['x'])
 
-            for index, row in sort_lines.iterrows():
+            same_line['page_line_index_absolute'] = page_index
+            sort_line       = same_line.sort_values(by=['x'])
+            page_index += 1
+
+            for index, row in sort_line.iterrows():
                 sorted_lines.append(row.to_dict())
-            
+
             #if len(next_lines) < 1:
             #    break
-            self.sort_lines(next_lines,len_groups,sorted_lines)
-    
+            self.sorted_lines(next_lines,len_groups,sorted_lines)
+
         return sorted_lines
 
-    def line_parser(self, page_image, pdf_index,page_number):
+
+
+    def sorted_lines_data(self,group,len_groups,lines=[],page_index=1):
+
+        while len(lines) < len_groups:
+            mean_semi_height = group['height'].mean() / 2.0
+            check_y          = group.iloc[0]['top']
+            same_line        = group[ abs(group['top'] - check_y) < mean_semi_height]
+            next_lines       = group[ abs(group['top'] - check_y) >= mean_semi_height]
+            #same_line.iloc[-1]['line_change'] = 1
+
+            same_line['page_line_index_absolute'] = page_index
+            sort_line       = same_line.sort_values(by=['left'])
+            page_index += 1
+
+            for index, row in sort_line.iterrows():
+                lines.append(row)
+            self.sorted_lines_data(next_lines,len_groups,lines,page_index)
+        return pd.DataFrame(lines)
+
+
+
+
+    def line_parser_image_to_data(self, page_image, pdf_index,page_number):
+
+        df = pytesseract.image_to_data(page_image, output_type=Output.DATAFRAME)
+        df = df[df['conf'] > 10]
+        df = df[df['text'] != ' ']
+        df = df.sort_values(by=['top'])
+        df = self.sorted_lines_data(df,len(df))
+        df['line_key'] = df['block_num'].astype(str) + df['par_num'].astype(str) + df['line_num'].astype(str)
+        lines_data=[]
+        for uinqe_line in df['line_key'].unique():
+            line= {}
+            same_line          =  df[df['line_key'] == uinqe_line]
+            line['text']       = ' '.join(same_line['text'].values)
+            line['top']        = same_line['top'].min()
+            line['left']       = same_line['left'].min()
+            line['height']     = same_line['height'].max()
+            line['block_num']  = same_line['block_num'].iloc[0]
+            line['par_num']    = same_line['par_num'].iloc[0]
+            line['line_num']   = same_line['line_num'].iloc[0]
+            line['pdf_index']  = pdf_index
+            line['page_no']    = page_number
+            line['avrage_conf']       = same_line['conf'].mean()
+
+            pdf_index         += 1
+
+            line['page_line_index_absolute'] = same_line['page_line_index_absolute'].iloc[0]
+            lines_data.append(line)
+
+        return lines_data , pdf_index
+
+
+
+    def line_parser_hocr(self, page_image, pdf_index,page_number):
         hocr       = pytesseract.image_to_pdf_or_hocr (page_image, lang=self.pdf_language, extension='hocr')
         tree       = html.fromstring (hocr)
         line_data  = []
@@ -100,14 +159,15 @@ class OCRlineRepositories:
                          'pdf_index': pdf_index , 'page_no':page_number})
         if len(line_data) > 0 :
             line_df = pd.DataFrame(line_data)
+            line_df['page_line_index_absolute'] = 0
             line_df = line_df.sort_values(by=['y'])
-            line_data = self.sort_lines(line_df,len(line_data),[])
-            
+            line_data = self.sorted_lines(line_df,len(line_data),[])
+
             for index,line in enumerate(line_data):
                 line['page_index'] = index
                 line['pdf_index']  = pdf_index
                 pdf_index         += 1
-        
+
         return line_data, pdf_index
 
 
@@ -129,7 +189,8 @@ class OCRlineRepositories:
             table_detect_file   = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
             print(table_detect_file,page_file)
             page_image              = self.mask_out_tables(table_detect_file, page_file)
-            line_data, pdf_index    = self.line_parser(page_image, pdf_index,page_num + 1)
+            #line_data, pdf_index    = self.line_parser_hocr(page_image, pdf_index,page_num + 1)
+            line_data, pdf_index    = self.line_parser_image_to_data(page_image, pdf_index,page_num + 1)
 
             if self.response['resolution'] == None:
                 self.response['resolution'] = {'x':page_image.shape[1] , 'y':page_image.shape[0]}
