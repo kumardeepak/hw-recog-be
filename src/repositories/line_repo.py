@@ -76,6 +76,7 @@ class OCRlineRepositories:
 
 
     def sorted_lines_data(self,group,len_groups,lines=[],page_index=1):
+        print(group.head())
         mean_semi_height = group['height'].mean() / 2.0
         check_y          = group.iloc[0]['top']
         same_line        = group[ abs(group['top'] - check_y) < mean_semi_height]
@@ -93,31 +94,38 @@ class OCRlineRepositories:
 
     def line_parser_image_to_data(self, page_image, pdf_index,page_number):
         df = pytesseract.image_to_data(page_image, output_type=Output.DATAFRAME,lang=self.pdf_language)
+        df['text'] = df['text'].astype(str)
         df = df[df['conf'] > 10]
         df = df[df['text'] != ' ']
-        df = df.sort_values(by=['top'])
-        self.sorted_lines_data(df,len(df),[],page_index=1)
+        if len(df) < 1 :
+            lines_data = '### Unable to detect text in this page ###'
+            return lines_data , pdf_index
 
-        self.page_df['line_key'] =  self.page_df['block_num'].astype(str) +  self.page_df['par_num'].astype(str) +  self.page_df['line_num'].astype(str)
-        lines_data=[]
-        for uinqe_line in  self.page_df['line_key'].unique():
-            line= {}
-            same_line             =  self.page_df[ self.page_df['line_key'] == uinqe_line]
-            line['text']          =  ' '.join(same_line['text'].values)
-            line['top']           =  int(same_line['top'].min())
-            line['left']          =  int(same_line['left'].min())
-            line['height']        =  int(same_line['height'].max())
-            line['block_num']     =  int(same_line['block_num'].iloc[0])
-            line['par_num']       =  int(same_line['par_num'].iloc[0])
-            line['line_num']      =  int(same_line['line_num'].iloc[0])
-            line['pdf_index']     =  pdf_index
-            line['page_no']       =  page_number
-            line['avrage_conf']   =  float(same_line['conf'].mean())
-            line['page_line_index_absolute'] = int(same_line['page_line_index_absolute'].iloc[0])
-            pdf_index += 1
-            lines_data.append(line)
+        else :
 
-        return lines_data , pdf_index
+            df = df.sort_values(by=['top'])
+            self.sorted_lines_data(df,len(df),[],page_index=1)
+
+            self.page_df['line_key'] =  self.page_df['block_num'].astype(str) +  self.page_df['par_num'].astype(str) +  self.page_df['line_num'].astype(str)
+            lines_data=[]
+            for uinqe_line in  self.page_df['line_key'].unique():
+                line= {}
+                same_line             =  self.page_df[ self.page_df['line_key'] == uinqe_line]
+                line['text']          =  ' '.join(same_line['text'].values)
+                line['top']           =  int(same_line['top'].min())
+                line['left']          =  int(same_line['left'].min())
+                line['height']        =  int(same_line['height'].max())
+                line['block_num']     =  int(same_line['block_num'].iloc[0])
+                line['par_num']       =  int(same_line['par_num'].iloc[0])
+                line['line_num']      =  int(same_line['line_num'].iloc[0])
+                line['pdf_index']     =  pdf_index
+                line['page_no']       =  page_number
+                line['avrage_conf']   =  float(same_line['conf'].mean())
+                line['page_line_index_absolute'] = int(same_line['page_line_index_absolute'].iloc[0])
+                pdf_index += 1
+                lines_data.append(line)
+
+            return lines_data , pdf_index
 
 
 
