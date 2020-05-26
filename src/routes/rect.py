@@ -7,4 +7,4 @@ RECT_BLUEPRINT = Blueprint("rect", __name__)
 Api(RECT_BLUEPRINT).add_resource(
     RectResource, "/ocr/extract"
 )
-Api(RECT_BLUEPRINT).add_resource(OcrLineResource,"/ocr/lines")
+Api(RECT_BLUEPRINT).add_resource(OcrLineResource,"/ocr/block_wise_lines")

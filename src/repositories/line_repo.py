@@ -35,7 +35,7 @@ class OCRlineRepositories:
         page_file         = self.pdf_to_image_dir + '/-' + self.page_num_correction (0) + '.jpg'
         osd               =  pytesseract.image_to_osd (page_file)
         language_script   =  osd.split('\nScript')[1][2:]
-        self.pdf_language =  self.language_map[language_script]
+        self.pdf_language =  'eng+'+self.language_map[language_script]
         print( 'Language detected {0}'.format(self.pdf_language))
 
     def mask_out_tables(self, table_detect_file, page):
@@ -104,7 +104,7 @@ class OCRlineRepositories:
 
     def line_parser_image_to_data(self, page_image, pdf_index,page_number):
 
-        df = pytesseract.image_to_data(page_image, output_type=Output.DATAFRAME)
+        df = pytesseract.image_to_data(page_image, output_type=Output.DATAFRAME,lang=self.pdf_language)
         df = df[df['conf'] > 10]
         df = df[df['text'] != ' ']
         df = df.sort_values(by=['top'])
