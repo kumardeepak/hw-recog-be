@@ -1,2 +1,3 @@
 from .rect import RectResource
-from .rect import OcrLineResource
+from .rect import OcrLineResourcev1
+from .rect import OcrLineResourcev2

@@ -11,8 +11,9 @@ import pandas as pd
 
 class OCRlineRepositories:
 
-    def __init__(self, pdf_path):
+    def __init__(self, pdf_path,version='v1'):
         self.pdf_path          = pdf_path
+        self.version           = version
         self.response          = {'resolution': None , 'lines_data': []}
         self.language_map      = {'Malayalam' : 'mal' , 'Tamil':'tam' , 'Devanagari':'hin','Telugu':'tel','Latin':'eng'}
         self.pdf_to_image ()
@@ -189,8 +190,10 @@ class OCRlineRepositories:
             table_detect_file   = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
             print(table_detect_file,page_file)
             page_image              = self.mask_out_tables(table_detect_file, page_file)
-            #line_data, pdf_index    = self.line_parser_hocr(page_image, pdf_index,page_num + 1)
-            line_data, pdf_index    = self.line_parser_image_to_data(page_image, pdf_index,page_num + 1)
+            if self.version == 'v1':
+                line_data, pdf_index    = self.line_parser_hocr(page_image, pdf_index,page_num + 1)
+            if self.version == 'v2' :
+                line_data, pdf_index    = self.line_parser_image_to_data(page_image, pdf_index,page_num + 1)
 
             if self.response['resolution'] == None:
                 self.response['resolution'] = {'x':page_image.shape[1] , 'y':page_image.shape[0]}

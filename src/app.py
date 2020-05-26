@@ -11,7 +11,7 @@ if config.ENABLE_CORS:
 
 for blueprint in vars(routes).values():
     if isinstance(blueprint, Blueprint):
-        server.register_blueprint(blueprint, url_prefix=config.API_URL_PREFIX)
+        server.register_blueprint(blueprint)#, url_prefix=config.API_URL_PREFIX)
 
 if __name__ == "__main__":
     #print(server.url_map)

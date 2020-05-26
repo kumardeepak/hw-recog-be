@@ -46,10 +46,27 @@ class RectResource(Resource):
         }
 
 
-class OcrLineResource(Resource):
+class OcrLineResourcev1(Resource):
     def post(self):
         args              = parser.parse_args()
-        Ocrlinewise       = OCRlineRepositories(os.path.join (config.FILE_STORAGE_PATH, args ['pdf_file_id']))
+        Ocrlinewise       = OCRlineRepositories(os.path.join (config.FILE_STORAGE_PATH, args ['pdf_file_id']),version='v1' )
+        line_data         = Ocrlinewise.response
+        return {
+            'status': {
+                'code' : 200,
+                'message' : 'api successful'
+            },
+            'resolution': line_data['resolution'],
+            'lines_data': line_data['lines_data']
+        }
+            
+            
+            
+
+class OcrLineResourcev2(Resource):
+    def post(self):
+        args              = parser.parse_args()
+        Ocrlinewise       = OCRlineRepositories(os.path.join (config.FILE_STORAGE_PATH, args ['pdf_file_id']),version='v2' )
         line_data         = Ocrlinewise.response
         return {
             'status': {
