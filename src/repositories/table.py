@@ -142,7 +142,7 @@ class TableRepositories:
                     else:
                         xi = 0
                         yi = yi + 1
-                rects.append ({"x": x1, "y": y1, "w": w1, "h": h1, "index": (yi, xi)})
+                rects.append ({"x": int(x1), "y": int(y1), "w": int(w1), "h": int(h1), "index": (int(yi), int(xi))})
                 cv2.rectangle (draw_conts, (x1, y1), (x1 + w1, y1 + h1), 255, 1)
                 cv2.putText (draw_conts, str ((xi, yi)), (int (midpoint [0]), int (midpoint [1])),
                              cv2.FONT_HERSHEY_SIMPLEX,
@@ -196,7 +196,7 @@ class TableRepositories:
                     margin  = 2
                     #check if after adding margin the endopints are still inside the image
                     ystart,yend, xstart,xend= self.end_point_correction(x,y,w,h,margin)
-                    table_dic = {"x": xstart, "y": ystart, "w": xend-xstart, "h": yend-ystart}
+                    table_dic = {"x": int(xstart), "y": int(ystart), "w": int(xend-xstart), "h": int(yend-ystart)}
 
                     crop_fraction = self.mask[ystart: yend, xstart:xend]
 
