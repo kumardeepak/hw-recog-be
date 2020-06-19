@@ -10,7 +10,7 @@ import uuid
 import pandas as pd
 import numpy as np
 
-class OCRlineRepositories:
+class OCRlineRepositoriesv3:
 
     def __init__(self, pdf_path):
         self.pdf_path          = pdf_path
@@ -23,7 +23,7 @@ class OCRlineRepositories:
         self.pdf_language_detect ()
         self.line_metadata()
         self.delete_images()
-        
+
 
     def pdf_to_image(self):
         self.pdf_name = self.pdf_path.split('/')[-1].split('.')[0]

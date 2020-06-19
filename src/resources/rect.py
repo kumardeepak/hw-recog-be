@@ -5,7 +5,7 @@ import logging
 import magic
 import cv2
 from flask.json import jsonify
-from repositories import RectRepositories, TableRepositories, OCRlineRepositories
+from repositories import RectRepositories, TableRepositories, OCRlineRepositories, OCRlineRepositoriesv3
 
 def check_image_file_id(id):
     if os.path.exists(os.path.join(config.FILE_STORAGE_PATH, id)) and os.path.isfile(os.path.join(config.FILE_STORAGE_PATH, id)):
@@ -59,7 +59,9 @@ class OcrLineResourcev1(Resource):
             'resolution': line_data['resolution'],
             'lines_data': line_data['lines_data']
         }
-            
+
+
+
             
             
 
@@ -76,3 +78,23 @@ class OcrLineResourcev2(Resource):
             'resolution': line_data['resolution'],
             'lines_data': line_data['lines_data']
         }
+
+
+class OCRlineRepositoriesv3(Resource):
+    def post(self):
+        args = parser.parse_args()
+        Ocrlinewise = OCRlineRepositories(os.path.join(config.FILE_STORAGE_PATH, args['pdf_file_id']))
+        line_data = Ocrlinewise.response
+        return {
+            'status': {
+                'code': 200,
+                'message': 'api successful'
+            },
+            'resolution': line_data['resolution'],
+            'lines_data': line_data['lines_data']
+        }
+
+
+
+
+

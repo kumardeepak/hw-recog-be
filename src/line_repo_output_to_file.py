@@ -21,7 +21,7 @@ import json
 
 
 
-from repositories.line_repo_v3 import OCRlineRepositories                                                                                                                                                         
+from repositories.line_repo_v3 import OCRlineRepositoriesv3                                                                                                                                                         
 
 
 
@@ -30,7 +30,7 @@ from repositories.line_repo_v3 import OCRlineRepositories
 
 path_to_pdf = '/home/dhiraj/Documents/data/4603_2017_11_1503_19663_Judgement_15-Jan-2020.pdf'
 
-text = OCRlineRepositories(path_to_pdf)     
+text = OCRlineRepositoriesv3(path_to_pdf)     
 
 output_dir = ''
 
