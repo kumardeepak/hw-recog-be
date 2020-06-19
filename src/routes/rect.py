@@ -9,4 +9,4 @@ Api(RECT_BLUEPRINT).add_resource(
 )
 Api(RECT_BLUEPRINT).add_resource(OcrLineResourcev1,"/api/v1/ocr/lines")
 Api(RECT_BLUEPRINT).add_resource(OcrLineResourcev2,"/api/v2/ocr/lines")
-Api(RECT_BLUEPRINT).add_resource(OCRlineRepositoriesv3,"/api/v3/ocr/lines")
+Api(RECT_BLUEPRINT).add_resource(OcrLineResourcev3,"/api/v3/ocr/lines")
