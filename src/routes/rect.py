@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from resources import RectResource,OcrLineResourcev1,OcrLineResourcev2,OCRlineRepositoriesv3
+from resources import RectResource,OcrLineResourcev1,OcrLineResourcev2,OcrLineResourcev3
 
 RECT_BLUEPRINT = Blueprint("rect", __name__)
 Api(RECT_BLUEPRINT).add_resource(
