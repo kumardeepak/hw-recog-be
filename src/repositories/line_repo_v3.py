@@ -4,8 +4,7 @@ import cv2
 from pdf2image import convert_from_path
 import os
 import glob
-#from repositories import TableRepositories
-from table import TableRepositories
+from repositories import TableRepositories
 
 import uuid
 import pandas as pd
@@ -24,6 +23,7 @@ class OCRlineRepositories:
         self.pdf_language_detect ()
         self.line_metadata()
         self.delete_images()
+        print(self.response)
 
     def pdf_to_image(self):
         self.pdf_name = self.pdf_path.split('/')[-1].split('.')[0]
@@ -39,29 +39,63 @@ class OCRlineRepositories:
         osd               =  pytesseract.image_to_osd (page_file)
         language_script   =  osd.split('\nScript')[1][2:]
         self.pdf_language =  'eng+'+self.language_map[language_script]
-        self.response['resolution'] = {'x': page_image.shape[1], 'y': page_image.shape[0]}
         print( 'Language detected {0}'.format(self.pdf_language))
 
     def mask_out_tables(self, table_detect_file, page):
         tables     = TableRepositories (table_detect_file)
         table_rois = tables.response ["response"] ["tables"]
+        #print(tables.response)
         page_image = cv2.imread (page, 0)
+        table_text =[]
         if len (table_rois) != 0:
             # images extracted by pdftohtml and pdftoimage have different resolutions
             y_scale = page_image.shape [0] / float (tables.input_image.shape [0])
             x_scale = page_image.shape [1] / float (tables.input_image.shape [1])
             # if len(table_rois) != 0
             for table in table_rois:
-                x = table ['x'] * x_scale
-                y = table ['y'] * y_scale
-                w = table ['w'] * x_scale
-                h = table ['h'] * y_scale
+                table = self.table_parser(table,page_image,y_scale,x_scale)
+                x = table ['x']
+                y = table ['y']
+                w = table ['w']
+                h = table ['h']
+                table_text.append(table)
                 page_image [int (y):int (y + h), int (x):int (x + w)] = 255
-        return page_image
+                #print(table)
+            return page_image ,table_text
+        else :
+            return page_image ,None
+
+    def table_parser(self,table_response,page_image,y_scale,x_scale):
+        cells     = table_response['rect']
+        origin_x  = table_response['x'] * x_scale
+        origin_y  = table_response['y'] * y_scale
+
+        cells_count = len(cells)
+        if cells_count > 0 :
+            for i in range(cells_count):
+                xstart  =   origin_x + table_response['rect'][i]['x'] * x_scale
+                xend    =   xstart   +   table_response['rect'][i]['w'] * x_scale
+                ystart  =   origin_y + table_response['rect'][i]['y'] * y_scale
+                yend    = ystart + table_response['rect'][i]['h'] * y_scale
+
+                crop_fraction = page_image[int(ystart): int(yend), int(xstart):int(xend)]
+                text = pytesseract.image_to_string(crop_fraction,lang=self.pdf_language,config='--psm 11')
+                table_response['rect'][i] = {'x' : int(xstart) ,'y':int(ystart), 'w':int( xend-xstart),'h':int(yend-ystart) , 'index':table_response['rect'][i]['index'] ,'text':text }
+        table_response['x'] = int(origin_x)
+        table_response['y']  = int(origin_y)
+        table_response['w']  = int(table_response['w'] * x_scale)
+        table_response['h']  = int(table_response['h'] *y_scale)
+
+
+        return table_response
+
+
+
+
+
 
     def bloat_text(self, image):
         # converitng image to binary
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         image = image > 125
         image = image.astype(np.uint8)
         # Bloating
@@ -90,8 +124,9 @@ class OCRlineRepositories:
     def sort_contours(self,contours_df, sorted_contours=[]):
 
         check_y = contours_df.iloc[0]['top']
-        same_line = contours_df[abs(contours_df['top'] - check_y) < self.line_spacing_median]
-        next_lines = contours_df[abs(contours_df['top'] - check_y) >= self.line_spacing_median]
+
+        same_line = contours_df[abs(contours_df['top'] - check_y) < self.line_spacing_median*0.5]
+        next_lines = contours_df[abs(contours_df['top'] - check_y) >= self.line_spacing_median*0.5]
         sort_lines = same_line.sort_values(by=['left'])
         for index, row in sort_lines.iterrows():
             sorted_contours.append(row)
@@ -120,7 +155,7 @@ class OCRlineRepositories:
         contours_df = pd.DataFrame(contours_list, columns=['left', 'top', 'width', 'height'])
         contours_df = contours_df.sort_values(by=['top'])
         sorted_contours = self.sort_contours(contours_df, [])
-        sorted_contours = pd.DataFrame(sorted_contours)
+        sorted_contours = pd.DataFrame(sorted_contours).reset_index()
 
         return sorted_contours
 
@@ -155,7 +190,7 @@ class OCRlineRepositories:
             text_df['line']    = None
             self.median_height      = text_df['height'].median()
             # Removing noise
-            text_df            = text_df[text_df['height'] > (self.median_height / 4.0)]
+            text_df            = text_df[text_df['height'] > (self.median_height / 3.0)]
 
             sorted_df, line_spacing, line = self.sort_words(text_df, sorted_group=[], line_spacing=[], line=0)
 
@@ -199,6 +234,7 @@ class OCRlineRepositories:
         lines_data = []
         # page_number = 1
         # pdf_index =   0
+
         for index, row in self.sorted_contours.iterrows():
             extracted_region = self.extract_region(row)
             blob_start = row['left']
@@ -220,11 +256,11 @@ class OCRlineRepositories:
                     line['bottom'] = int(same_line['bottom'].max())
 
                     line['block_num'] = int(same_line['block_num'].iloc[0])
-                    line['blob_id'] = index
-                    line['pdf_index'] = pdf_index
-                    line['page_no'] = page_number
+                    line['blob_id'] = int(index)
+                    line['pdf_index'] = int(pdf_index)
+                    line['page_no'] = int(page_number)
                     line['avrage_conf'] = float(same_line['conf'].mean())
-                    line['page_line_index'] = line
+                    line['page_line_index'] = int(line_id)
                     line['visual_break'] = self.break_condition( line_id, last_line, page_number, lines_count)
 
                     pdf_index += 1
@@ -249,25 +285,29 @@ class OCRlineRepositories:
     def line_metadata(self):
         pdf_index=0
         for page_num in range(self.num_of_pages):
-            page_file           = self.pdf_to_image_dir + '/-' + self.page_num_correction(page_num) + '.jpg'
-            table_detect_file   = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
-            page_image          = self.mask_out_tables(table_detect_file, page_file)
+            page_file              = self.pdf_to_image_dir + '/-' + self.page_num_correction(page_num) + '.jpg'
+            table_detect_file      = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
+            page_image ,table_text = self.mask_out_tables(table_detect_file, page_file)
             print(table_detect_file,page_file)
-
+            #
             try :
-                check_for_text = self.extraction_helper(page_image)
+                 check_for_text = self.extraction_helper(page_image)
             except :
-                check_for_text = None
+                 check_for_text = None
+            #check_for_text = self.extraction_helper(page_image)
 
-            if check_for_text != None :
+            if (check_for_text != None)  :
                 line_data, pdf_index    = self. line_parser(page_num +1, pdf_index)
-                self.response['lines_data'].append(line_data)
+                self.response['lines_data'].append({'line_data':line_data ,'table_data':table_text})
             else :
-                self.response['lines_data'].append("### No text detected in this page")
+                if (table_text != None):
+                    self.response['lines_data'].append({'line_data': "### No text detected in this page ###", 'table_data': table_text})
+                else:
+                    self.response['lines_data'].append({'line_data': "### No text detected in this page ###", 'table_data': "### No text detected in this page ###"})
 
             if self.response['resolution'] == None:
+                self.response['resolution'] = {'x':page_image.shape[1] , 'y':page_image.shape[0]}
 
-            self.response['lines_data'].append(line_data)
 
 
 

@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import pandas as pd
 #import logging
 #import os
 #import config
@@ -68,16 +69,37 @@ class TableRepositories:
         self.mask = horizontal + vertical
         self.intersections = cv2.bitwise_and(horizontal, vertical)
 
-    def sort_contours(self, cnts, method="left-to-right"):
-        reverse = False
-        i = 0
-        if method == "right-to-left" or method == "bottom-to-top":
-            reverse = True
-        if method == "top-to-bottom" or method == "bottom-to-top":
-            i = 1
-        boundingBoxes = [cv2.boundingRect (c) for c in cnts]
-        (cnts, boundingBoxes) = zip (*sorted (zip (cnts, boundingBoxes), key=lambda b: b [1] [i], reverse=reverse))
-        return (cnts, boundingBoxes)
+    def sort_contours(self, cnts):
+        contours_list =[]
+        for c in cnts:
+            x, y, w, h = cv2.boundingRect(c)
+            contours_list.append([x, y, w, h])
+        contours_df = pd.DataFrame(contours_list, columns=['left', 'top', 'width', 'height'])
+        contours_df = contours_df.sort_values(by=['top'])
+        sorted_contours = self.sort_contours_helper(contours_df, [])
+        return sorted_contours
+
+
+    def sort_contours_helper(self,contours_df, sorted_contours=[]):
+
+        check_y = contours_df.iloc[0]['top']
+        spacing_threshold =  contours_df.iloc[0]['height'] *0.5
+
+        same_line = contours_df[abs(contours_df['top'] - check_y) < spacing_threshold ]
+        next_lines = contours_df[abs(contours_df['top'] - check_y) >=spacing_threshold]
+        sort_lines = same_line.sort_values(by=['left'])
+        for index, row in sort_lines.iterrows():
+            sorted_contours.append(row)
+        if len(next_lines) > 0:
+            self.sort_contours_helper(next_lines, sorted_contours)
+
+        return sorted_contours
+
+
+
+
+
+
 
     def draw_contours_index(self, contours, img):
         '''
@@ -92,16 +114,21 @@ class TableRepositories:
         midpoints = []
         rects = []
         xi, yi = 0, 0
-        count_contours = len (contours)
-        for i in range (count_contours):
-            cont_area = cv2.contourArea (contours [count_contours - i -1])
-            x1, y1, w1, h1 = cv2.boundingRect (contours [count_contours - i - 1])
+        #count_contours = len (contours)
+        #for i in range (count_contours):
+        for contour in contours:
+            #cont_area = cv2.contourArea (contours [count_contours - i -1])
+            #x1, y1, w1, h1 = cv2.boundingRect (contours [count_contours - i - 1])
+
+            cont_area      = contour['height'] * contour['width']
+            x1, y1, w1, h1 = contour['left'] ,contour['top'] , contour['width'] , contour['height']
+
 
             area_ratio = cont_area / float(image_area)
             #print(area_ratio, i)
 
             # filtering out lines and noise
-            if (area_ratio < 0.8) & (area_ratio > 0.005):
+            if (area_ratio < 0.8) & (area_ratio > 0.003):
                 midpoint = [int (x1 + w1 / 2), int (y1 + h1 / 2)]  # np.mean(contours[i],axis=0)
                 midpoints.append (midpoint)
                 if len (midpoints) > 1:
@@ -110,12 +137,12 @@ class TableRepositories:
 
                     # Detecting change in column by measuring difference in x coordinate of current and previous cell
                     # (cells already sored based on their coordinates)
-                    if shift < 10:
-                        yi = yi + 1
-                    else:
-                        yi = 0
+                    if shift < h1*0.5:
                         xi = xi + 1
-                rects.append ({"x": x1, "y": y1, "w": w1, "h": h1, "index": (xi, yi)})
+                    else:
+                        xi = 0
+                        yi = yi + 1
+                rects.append ({"x": x1, "y": y1, "w": w1, "h": h1, "index": (yi, xi)})
                 cv2.rectangle (draw_conts, (x1, y1), (x1 + w1, y1 + h1), 255, 1)
                 cv2.putText (draw_conts, str ((xi, yi)), (int (midpoint [0]), int (midpoint [1])),
                              cv2.FONT_HERSHEY_SIMPLEX,
@@ -166,16 +193,16 @@ class TableRepositories:
 
                 # Filtering for noise
                 if (area_ratio < 0.9) & (area_ratio > 0.005):
-                    table_dic = {"x": x, "y": y, "w": w, "h": h}
                     margin  = 2
                     #check if after adding margin the endopints are still inside the image
                     ystart,yend, xstart,xend= self.end_point_correction(x,y,w,h,margin)
+                    table_dic = {"x": xstart, "y": ystart, "w": xend-xstart, "h": yend-ystart}
 
                     crop_fraction = self.mask[ystart: yend, xstart:xend]
 
                     sub_contours = cv2.findContours (crop_fraction, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
                     sub_contours = sub_contours [0] if len (sub_contours) == 2 else sub_contours [1]
-                    sorted_conts = sub_contours  # self.sort_contours(sub_contours,method = self.SORT_METHOD)
+                    sorted_conts = self.sort_contours(sub_contours)
 
                     indexed_sub_image, rects = self.draw_contours_index (sorted_conts, img=crop_fraction)
                     table_dic ['rect'] = rects
