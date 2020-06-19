@@ -23,7 +23,7 @@ class OCRlineRepositories:
         self.pdf_language_detect ()
         self.line_metadata()
         self.delete_images()
-        print(self.response)
+        
 
     def pdf_to_image(self):
         self.pdf_name = self.pdf_path.split('/')[-1].split('.')[0]
