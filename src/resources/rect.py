@@ -80,10 +80,10 @@ class OcrLineResourcev2(Resource):
         }
 
 
-class OCRlineRepositoriesv3(Resource):
+class OcrLineResourcev3(Resource):
     def post(self):
         args = parser.parse_args()
-        Ocrlinewise = OCRlineRepositories(os.path.join(config.FILE_STORAGE_PATH, args['pdf_file_id']))
+        Ocrlinewise = OCRlineRepositoriesv3(os.path.join(config.FILE_STORAGE_PATH, args['pdf_file_id']))
         line_data = Ocrlinewise.response
         return {
             'status': {
