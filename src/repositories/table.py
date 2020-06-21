@@ -83,7 +83,7 @@ class TableRepositories:
     def sort_contours_helper(self,contours_df, sorted_contours=[]):
 
         check_y = contours_df.iloc[0]['top']
-        spacing_threshold =  contours_df.iloc[0]['height'] *0.5
+        spacing_threshold =  10 #contours_df.iloc[0]['height'] *0.5
 
         same_line = contours_df[abs(contours_df['top'] - check_y) < spacing_threshold ]
         next_lines = contours_df[abs(contours_df['top'] - check_y) >=spacing_threshold]
@@ -137,7 +137,7 @@ class TableRepositories:
 
                     # Detecting change in column by measuring difference in x coordinate of current and previous cell
                     # (cells already sored based on their coordinates)
-                    if shift < h1*0.5:
+                    if shift <  10: # h1*0.5:
                         xi = xi + 1
                     else:
                         xi = 0
