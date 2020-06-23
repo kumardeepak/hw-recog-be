@@ -38,14 +38,17 @@ class RectRepositories:
 
     def get_contours_and_intersections(self):
         logging.debug(self.filepath)
-        img                  = cv2.imread(self.filepath)
-        gray                 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        if type(self.filepath) == str:
+            img = cv2.imread(self.filepath, 0)
+        else:
+            img = self.filepath
+
         MAX_THRESHOLD_VALUE  = 255
         BLOCK_SIZE           = 15
         THRESHOLD_CONSTANT   = 0
         SCALE                = 15
 
-        filtered   = cv2.adaptiveThreshold(~gray, MAX_THRESHOLD_VALUE, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, BLOCK_SIZE, THRESHOLD_CONSTANT)
+        filtered   = cv2.adaptiveThreshold(~img, MAX_THRESHOLD_VALUE, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, BLOCK_SIZE, THRESHOLD_CONSTANT)
         horizontal = filtered.copy()
         vertical   = filtered.copy()
 

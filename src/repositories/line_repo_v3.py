@@ -5,6 +5,8 @@ from pdf2image import convert_from_path
 import os
 import glob
 from repositories import TableRepositories
+from repositories import RectRepositories
+import config
 
 import uuid
 import pandas as pd
@@ -43,6 +45,8 @@ class OCRlineRepositoriesv3:
 
     def mask_out_tables(self, table_detect_file, page):
         tables     = TableRepositories (table_detect_file)
+        Rects = RectRepositories(table_detect_file)
+        lines, _ = Rects.get_tables_and_lines()
         table_rois = tables.response ["response"] ["tables"]
         #print(tables.response)
         page_image = cv2.imread (page, 0)
@@ -61,9 +65,9 @@ class OCRlineRepositoriesv3:
                 table_text.append(table)
                 page_image [int (y):int (y + h), int (x):int (x + w)] = 255
                 #print(table)
-            return page_image ,table_text
+            return page_image ,table_text,lines
         else :
-            return page_image ,None
+            return page_image ,None,lines
 
     def table_parser(self,table_response,page_image,y_scale,x_scale):
         cells     = table_response['rect']
@@ -88,11 +92,6 @@ class OCRlineRepositoriesv3:
 
 
         return table_response
-
-
-
-
-
 
     def bloat_text(self, image):
         # converitng image to binary
@@ -285,9 +284,9 @@ class OCRlineRepositoriesv3:
     def line_metadata(self):
         pdf_index=0
         for page_num in range(self.num_of_pages):
-            page_file              = self.pdf_to_image_dir + '/-' + self.page_num_correction(page_num) + '.jpg'
-            table_detect_file      = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
-            page_image ,table_text = self.mask_out_tables(table_detect_file, page_file)
+            page_file                      = self.pdf_to_image_dir + '/-' + self.page_num_correction(page_num) + '.jpg'
+            table_detect_file              = self.pdf_to_image_dir + '/c' + self.page_num_correction(page_num,3) + '.png'
+            page_image ,table_text,lines   = self.mask_out_tables(table_detect_file, page_file)
             print(table_detect_file,page_file)
             #
             try :
@@ -298,12 +297,12 @@ class OCRlineRepositoriesv3:
 
             if (check_for_text != None)  :
                 line_data, pdf_index    = self. line_parser(page_num +1, pdf_index)
-                self.response['lines_data'].append({'line_data':line_data ,'table_data':table_text})
+                self.response['lines_data'].append({'line_data':line_data ,'table_data':table_text,'lines':lines})
             else :
                 if (table_text != None):
-                    self.response['lines_data'].append({'line_data': "### No text detected in this page ###", 'table_data': table_text})
+                    self.response['lines_data'].append({'line_data': "### No text detected in this page ###", 'table_data': table_text,'lines':lines})
                 else:
-                    self.response['lines_data'].append({'line_data': "### No text detected in this page ###", 'table_data': "### No text detected in this page ###"})
+                    self.response['lines_data'].append({'line_data': "### No text detected in this page ###", 'table_data': "### No text detected in this page ###",'lines':lines})
 
             if self.response['resolution'] == None:
                 self.response['resolution'] = {'x':page_image.shape[1] , 'y':page_image.shape[0]}
@@ -321,7 +320,11 @@ class OCRlineRepositoriesv3:
         end_delta = abs(right_margin - line_ending)
 
         if line_id == last_line:
-            return 1
+            # Adding exception for last line of page
+            if (start_delta < 2 * self.median_height) & (end_delta < 2 * self.median_height)
+                return 0
+            else:
+                return 1
         else:
             # First pages uses centre alignment fo headings and titles
             if page_number == 1:
