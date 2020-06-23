@@ -44,17 +44,22 @@ class OCRlineRepositoriesv3:
         print( 'Language detected {0}'.format(self.pdf_language))
 
     def mask_out_tables(self, table_detect_file, page):
+        
+        page_image = cv2.imread (page, 0)        
         tables     = TableRepositories (table_detect_file)
+        y_scale = page_image.shape[0] / float(tables.input_image.shape[0])
+        x_scale = page_image.shape[1] / float(tables.input_image.shape[1])
+        table_rois = tables.response ["response"] ["tables"]
+
         Rects = RectRepositories(table_detect_file)
         lines, _ = Rects.get_tables_and_lines()
-        table_rois = tables.response ["response"] ["tables"]
+        lines = self.scale_lines(lines,x_scale,y_scale)
         #print(tables.response)
-        page_image = cv2.imread (page, 0)
         table_text =[]
         if len (table_rois) != 0:
             # images extracted by pdftohtml and pdftoimage have different resolutions
-            y_scale = page_image.shape [0] / float (tables.input_image.shape [0])
-            x_scale = page_image.shape [1] / float (tables.input_image.shape [1])
+            #y_scale = page_image.shape [0] / float (tables.input_image.shape [0])
+            #x_scale = page_image.shape [1] / float (tables.input_image.shape [1])
             # if len(table_rois) != 0
             for table in table_rois:
                 table = self.table_parser(table,page_image,y_scale,x_scale)
@@ -68,6 +73,18 @@ class OCRlineRepositoriesv3:
             return page_image ,table_text,lines
         else :
             return page_image ,None,lines
+        
+    def scale_lines(self,lines,x_scale,y_scale):
+        len_lines = len(lines)
+        if len_lines > 0:
+            for i in range(len_lines):
+                lines[i]['x'] = lines[i]['x'] * x_scale
+                lines[i]['y'] = lines[i]['y'] * y_scale
+                lines[i]['w'] = lines[i]['w'] * x_scale
+                lines[i]['h'] = lines[i]['h'] * y_scale
+                
+        return lines
+        
 
     def table_parser(self,table_response,page_image,y_scale,x_scale):
         cells     = table_response['rect']
