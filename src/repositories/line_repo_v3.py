@@ -78,10 +78,10 @@ class OCRlineRepositoriesv3:
         len_lines = len(lines)
         if len_lines > 0:
             for i in range(len_lines):
-                lines[i]['x'] = lines[i]['x'] * x_scale
-                lines[i]['y'] = lines[i]['y'] * y_scale
-                lines[i]['w'] = lines[i]['w'] * x_scale
-                lines[i]['h'] = lines[i]['h'] * y_scale
+                lines[i]['x'] = int( lines[i]['x'] * x_scale)
+                lines[i]['y'] = int(lines[i]['y'] * y_scale)
+                lines[i]['w'] = int(lines[i]['w'] * x_scale)
+                lines[i]['h'] = int(lines[i]['h'] * y_scale)
                 
         return lines
         
