@@ -28,8 +28,9 @@ from repositories.line_repo_v3 import OCRlineRepositoriesv3
 
 #path_to_pdf = '/home/dhiraj/Documents/data/SC_JUDGMENTS_2010_2020/SC_JUDGMENTS_2010_2020/2020/40086_2018_6_35_21037_Judgement_28-Feb-2020.pdf'                                                                           
 
-path_to_pdf = '/home/dhiraj/Documents/data/4603_2017_11_1503_19663_Judgement_15-Jan-2020.pdf'
+#path_to_pdf = '/home/dhiraj/Documents/data/4603_2017_11_1503_19663_Judgement_15-Jan-2020.pdf'
 
+path_to_pdf = '/home/dhiraj/Downloads/20521.pdf'
 text = OCRlineRepositoriesv3(path_to_pdf)     
 
 output_dir = ''
