@@ -124,6 +124,7 @@ class OCRlineRepositoriesv3:
         # Bloating
         dist_transform = cv2.distanceTransform(image, cv2.DIST_L2, 5)
         ret, sure_fg = cv2.threshold(dist_transform, self.line_spacing_median * 0.5, 255, 0)
+        #cv2.imwrite( str(uuid.uuid1()) +'.png' ,sure_fg)
         return sure_fg.astype(np.uint8)
 
     def sort_words(self,group, sorted_group=[], line_spacing=[], line=0):
@@ -218,6 +219,8 @@ class OCRlineRepositoriesv3:
             self.median_height      = text_df['height'].median()
             # Removing noise
             text_df            = text_df[text_df['height'] > (self.median_height / 3.0)]
+            text_df = text_df[text_df['text'] != ' ']
+
 
             sorted_df, line_spacing, line = self.sort_words(text_df, sorted_group=[], line_spacing=[], line=0)
 
