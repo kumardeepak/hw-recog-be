@@ -19,7 +19,7 @@ class OCRlineRepositoriesv3:
         self.response          = {'resolution': None , 'lines_data': []}
         self.language_map      = {'Malayalam' : 'mal' , 'Tamil':'tam' , 'Devanagari':'hin','Telugu':'tel','Latin':'eng'}
         self.margin_support    = 4
-        self.tesseract_conf    = 10
+        self.tesseract_conf    = 0
         self.page_df           = None
         self.pdf_to_image ()
         self.pdf_language_detect ()
@@ -45,16 +45,19 @@ class OCRlineRepositoriesv3:
 
     def mask_out_tables(self, table_detect_file, page):
         #loading and binarisation
-        page_image = cv2.imread (page, 0)
-        page_image = page_image > 100
-        page_image = page_image.astype(np.uint8)
+        page_image = cv2.imread(page,0)
 
-        tables     = TableRepositories (table_detect_file)
+        table_image = cv2.imread (table_detect_file, 0)
+        table_image = table_image > 125
+        table_image = table_image.astype(np.uint8) *255
+        #cv2.imwrite('1.png',table_image )
+
+        tables     = TableRepositories (table_image)
         y_scale = page_image.shape[0] / float(tables.input_image.shape[0])
         x_scale = page_image.shape[1] / float(tables.input_image.shape[1])
         table_rois = tables.response ["response"] ["tables"]
 
-        Rects = RectRepositories(table_detect_file)
+        Rects = RectRepositories(table_image)
         lines, _ = Rects.get_tables_and_lines()
         lines = self.scale_lines(lines,x_scale,y_scale)
         #print(tables.response)
@@ -71,11 +74,12 @@ class OCRlineRepositoriesv3:
                 w = table ['w']
                 h = table ['h']
                 table_text.append(table)
-                page_image [int (y):int (y + h), int (x):int (x + w)] = 255
+                print(x,y,w,h)
+                #page_image [int (y):int (y + h), int (x):int (x + w)] = 255
                 #print(table)
             return page_image ,table_text,lines
         else :
-            return page_image ,None,lines
+            return page_image ,[],lines
         
     def scale_lines(self,lines,x_scale,y_scale):
         len_lines = len(lines)
@@ -198,6 +202,10 @@ class OCRlineRepositoriesv3:
         return lines_df
 
     def extraction_helper(self, input_image):
+        input_image = input_image > 125
+        input_image = input_image.astype(np.uint8)
+        #cv2.imwrite('in.png',input_image*255)
+
         text_df = pytesseract.image_to_data(input_image, lang=self.pdf_language, output_type=Output.DATAFRAME)
         text_df = text_df[text_df['conf'] > self.tesseract_conf]
         if len(text_df) > 0:
@@ -310,9 +318,9 @@ class OCRlineRepositoriesv3:
             print(table_detect_file,page_file)
             #
             # try :
-            #      check_for_text = self.extraction_helper(page_image)
+            #     check_for_text = self.extraction_helper(page_image)
             # except :
-            #      check_for_text = None
+            #     check_for_text = None
             check_for_text = self.extraction_helper(page_image)
 
             if (check_for_text != None)  :
@@ -320,9 +328,9 @@ class OCRlineRepositoriesv3:
                 self.response['lines_data'].append({'line_data':line_data ,'table_data':table_text,'lines':lines})
             else :
                 if (table_text != None):
-                    self.response['lines_data'].append({'line_data': "### No text detected in this page ###", 'table_data': table_text,'lines':lines})
+                    self.response['lines_data'].append({'line_data': None, 'table_data': table_text,'lines':lines})
                 else:
-                    self.response['lines_data'].append({'line_data': "### No text detected in this page ###", 'table_data': "### No text detected in this page ###",'lines':lines})
+                    self.response['lines_data'].append({'line_data': None, 'table_data': None,'lines':lines})
 
             if self.response['resolution'] == None:
                 self.response['resolution'] = {'x':page_image.shape[1] , 'y':page_image.shape[0]}

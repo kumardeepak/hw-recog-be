@@ -30,7 +30,7 @@ from repositories.line_repo_v3 import OCRlineRepositoriesv3
 
 #path_to_pdf = '/home/dhiraj/Documents/data/4603_2017_11_1503_19663_Judgement_15-Jan-2020.pdf'
 
-path_to_pdf = '/home/dhiraj/Downloads/20521.pdf'
+path_to_pdf = '/home/dhiraj/Documents/data/downloaded.pdf'
 text = OCRlineRepositoriesv3(path_to_pdf)     
 
 output_dir = ''
