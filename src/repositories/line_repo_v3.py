@@ -124,7 +124,7 @@ class OCRlineRepositoriesv3:
         # Bloating
         dist_transform = cv2.distanceTransform(image, cv2.DIST_L2, 5)
         ret, sure_fg = cv2.threshold(dist_transform, self.line_spacing_median * 0.5, 255, 0)
-        #cv2.imwrite( str(uuid.uuid1()) +'.png' ,sure_fg)
+        cv2.imwrite( str(uuid.uuid1()) +'.png' ,sure_fg)
         return sure_fg.astype(np.uint8)
 
     def sort_words(self,group, sorted_group=[], line_spacing=[], line=0):
@@ -203,19 +203,20 @@ class OCRlineRepositoriesv3:
         return lines_df
 
     def extraction_helper(self, input_image):
-        input_image = input_image > 125
-        input_image = input_image.astype(np.uint8)
+        #input_image = input_image > 125
+        #input_image = input_image.astype(np.uint8)
         #cv2.imwrite('in.png',input_image*255)
 
         text_df = pytesseract.image_to_data(input_image, lang=self.pdf_language, output_type=Output.DATAFRAME)
         text_df = text_df[text_df['conf'] > self.tesseract_conf]
         if len(text_df) > 0:
-            text_df['bottom']  = text_df['top'] + text_df['height']
-            text_df['right']   = text_df['left'] + text_df['width']
-            text_df['ymid']    = text_df['top'] + text_df['height'] * 0.5
-            text_df            = text_df.sort_values(by=['top'])
-            text_df['text']    = text_df['text'].astype(str)
-            text_df['line']    = None
+            text_df['bottom']   = text_df['top'] + text_df['height']
+            text_df['right']    = text_df['left'] + text_df['width']
+            text_df['ymid']     = text_df['top'] + text_df['height'] * 0.5
+            text_df             = text_df.sort_values(by=['top'])
+            text_df['text']     = text_df['text'].astype(str)
+            text_df['line']     = None
+            text_df['line_key'] = text_df['block_num'].astype(str) + text_df['par_num'].astype(str) + text_df['line_num'].astype(str)
             self.median_height      = text_df['height'].median()
             # Removing noise
             text_df            = text_df[text_df['height'] > (self.median_height / 3.0)]
@@ -291,6 +292,7 @@ class OCRlineRepositoriesv3:
                     line['page_no'] = int(page_number)
                     line['avrage_conf'] = float(same_line['conf'].mean())
                     line['page_line_index'] = int(line_id)
+                    line['word_conf']      = ''
                     line['visual_break'] = self.break_condition( line_id, last_line, page_number, lines_count)
 
                     pdf_index += 1
