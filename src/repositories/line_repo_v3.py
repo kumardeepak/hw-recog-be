@@ -203,8 +203,8 @@ class OCRlineRepositoriesv3:
         return lines_df
 
     def extraction_helper(self, input_image):
-        input_image = input_image > 125
-        input_image = input_image.astype(np.uint8)
+        #input_image = input_image > 125
+        #input_image = input_image.astype(np.uint8)
         #cv2.imwrite('in.png',input_image*255)
 
         text_df = pytesseract.image_to_data(input_image, lang=self.pdf_language, output_type=Output.DATAFRAME)
