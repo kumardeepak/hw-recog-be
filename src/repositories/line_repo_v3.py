@@ -44,8 +44,11 @@ class OCRlineRepositoriesv3:
         print( 'Language detected {0}'.format(self.pdf_language))
 
     def mask_out_tables(self, table_detect_file, page):
-        
-        page_image = cv2.imread (page, 0)        
+        #loading and binarisation
+        page_image = cv2.imread (page, 0)
+        page_image = page_image > 125
+        page_image = page_image.astype(np.uint8)
+
         tables     = TableRepositories (table_detect_file)
         y_scale = page_image.shape[0] / float(tables.input_image.shape[0])
         x_scale = page_image.shape[1] / float(tables.input_image.shape[1])
@@ -112,7 +115,7 @@ class OCRlineRepositoriesv3:
 
     def bloat_text(self, image):
         # converitng image to binary
-        image = image > 125
+        image = image > 100
         image = image.astype(np.uint8)
         # Bloating
         dist_transform = cv2.distanceTransform(image, cv2.DIST_L2, 5)
