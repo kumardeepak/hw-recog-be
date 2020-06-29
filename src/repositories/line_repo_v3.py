@@ -309,11 +309,11 @@ class OCRlineRepositoriesv3:
             page_image ,table_text,lines   = self.mask_out_tables(table_detect_file, page_file)
             print(table_detect_file,page_file)
             #
-            try :
-                 check_for_text = self.extraction_helper(page_image)
-            except :
-                 check_for_text = None
-            #check_for_text = self.extraction_helper(page_image)
+            # try :
+            #      check_for_text = self.extraction_helper(page_image)
+            # except :
+            #      check_for_text = None
+            check_for_text = self.extraction_helper(page_image)
 
             if (check_for_text != None)  :
                 line_data, pdf_index    = self. line_parser(page_num +1, pdf_index)
