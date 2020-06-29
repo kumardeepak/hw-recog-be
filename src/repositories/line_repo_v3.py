@@ -46,8 +46,8 @@ class OCRlineRepositoriesv3:
     def mask_out_tables(self, table_detect_file, page):
         #loading and binarisation
         page_image = cv2.imread (page, 0)
-        page_image = page_image > 125
-        page_image = page_image.astype(np.uint8)
+        #page_image = page_image > 100
+        #page_image = page_image.astype(np.uint8)
 
         tables     = TableRepositories (table_detect_file)
         y_scale = page_image.shape[0] / float(tables.input_image.shape[0])
