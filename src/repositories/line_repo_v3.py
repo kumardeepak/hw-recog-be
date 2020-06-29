@@ -115,8 +115,8 @@ class OCRlineRepositoriesv3:
 
     def bloat_text(self, image):
         # converitng image to binary
-        image = image > 100
-        image = image.astype(np.uint8)
+        #image = image > 100
+        #image = image.astype(np.uint8)
         # Bloating
         dist_transform = cv2.distanceTransform(image, cv2.DIST_L2, 5)
         ret, sure_fg = cv2.threshold(dist_transform, self.line_spacing_median * 0.5, 255, 0)
