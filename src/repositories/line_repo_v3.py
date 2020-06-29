@@ -48,7 +48,7 @@ class OCRlineRepositoriesv3:
         page_image = cv2.imread(page,0)
 
         table_image = cv2.imread (table_detect_file, 0)
-        table_image = table_image > 125
+        table_image = table_image > 100
         table_image = table_image.astype(np.uint8) *255
         #cv2.imwrite('1.png',table_image )
 
@@ -124,7 +124,7 @@ class OCRlineRepositoriesv3:
         # Bloating
         dist_transform = cv2.distanceTransform(image, cv2.DIST_L2, 5)
         ret, sure_fg = cv2.threshold(dist_transform, self.line_spacing_median * 0.5, 255, 0)
-        cv2.imwrite( str(uuid.uuid1()) +'.png' ,sure_fg)
+        #cv2.imwrite( str(uuid.uuid1()) +'.png' ,sure_fg)
         return sure_fg.astype(np.uint8)
 
     def sort_words(self,group, sorted_group=[], line_spacing=[], line=0):
@@ -261,6 +261,13 @@ class OCRlineRepositoriesv3:
 
         return end_point
 
+    def word_conf(self,sub_df):
+        word_conf = []
+        for index, row in sub_df.iterrows():
+            word_conf.append({row['text']: row['conf']})
+
+        return word_conf
+
     def line_parser(self, page_number, pdf_index):
         lines_data = []
         # page_number = 1
@@ -292,7 +299,7 @@ class OCRlineRepositoriesv3:
                     line['page_no'] = int(page_number)
                     line['avrage_conf'] = float(same_line['conf'].mean())
                     line['page_line_index'] = int(line_id)
-                    line['word_conf']      = ''
+                    line['word_conf']      = self.word_conf(same_line)
                     line['visual_break'] = self.break_condition( line_id, last_line, page_number, lines_count)
 
                     pdf_index += 1
