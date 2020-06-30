@@ -219,7 +219,7 @@ class OCRlineRepositoriesv3:
             text_df['line_key'] = text_df['block_num'].astype(str) + text_df['par_num'].astype(str) + text_df['line_num'].astype(str)
             self.median_height      = text_df['height'].median()
             # Removing noise
-            text_df            = text_df[text_df['height'] > (self.median_height / 3.0)]
+            text_df            = text_df[text_df['height'] > (self.median_height / 2.0)]
             text_df = text_df[text_df['text'] != ' ']
 
 
