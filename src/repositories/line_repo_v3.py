@@ -18,9 +18,11 @@ class OCRlineRepositoriesv3:
         self.pdf_path          = pdf_path
         self.response          = {'resolution': None , 'lines_data': []}
         self.language_map      = {'Malayalam' : 'mal' , 'Tamil':'tam' , 'Devanagari':'hin','Telugu':'tel','Latin':'eng'}
+        self.pdf_language =    = 'eng'
         self.margin_support    = 4
         self.tesseract_conf    = 0
         self.page_df           = None
+        self.pdf_to_html_width = None
         self.pdf_to_image ()
         self.pdf_language_detect ()
         self.line_metadata()
@@ -40,7 +42,10 @@ class OCRlineRepositoriesv3:
         page_file         = self.pdf_to_image_dir + '/-' + self.page_num_correction (0) + '.jpg'
         osd               =  pytesseract.image_to_osd (page_file)
         language_script   =  osd.split('\nScript')[1][2:]
-        self.pdf_language =  'eng+'+self.language_map[language_script]
+        try :
+            self.pdf_language = self.pdf_language + '+' + self.language_map[language_script]
+        except :
+            pass
         print( 'Language detected {0}'.format(self.pdf_language))
 
     def mask_out_tables(self, table_detect_file, page):
@@ -53,6 +58,11 @@ class OCRlineRepositoriesv3:
         #cv2.imwrite('1.png',table_image )
 
         tables     = TableRepositories (table_image)
+
+        if self.pdf_to_html_width == None :
+            self.pdf_to_html_width = float(tables.input_image.shape[1])
+            self.pdf_to_html_height = float(tables.input_image.shape[0])
+
         y_scale = page_image.shape[0] / float(tables.input_image.shape[0])
         x_scale = page_image.shape[1] / float(tables.input_image.shape[1])
         table_rois = tables.response ["response"] ["tables"]
