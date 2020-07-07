@@ -18,7 +18,7 @@ class OCRlineRepositoriesv3:
         self.pdf_path          = pdf_path
         self.response          = {'resolution': None , 'lines_data': []}
         self.language_map      = {'Malayalam' : 'mal' , 'Tamil':'tam' , 'Devanagari':'hin','Telugu':'tel','Latin':'eng'}
-        self.pdf_language =    = 'eng'
+        self.pdf_language      = 'eng'
         self.margin_support    = 4
         self.tesseract_conf    = 0
         self.page_df           = None
