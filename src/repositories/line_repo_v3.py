@@ -33,7 +33,7 @@ class OCRlineRepositoriesv3:
         self.pdf_name = self.pdf_path.split('/')[-1].split('.')[0]
         self.pdf_to_image_dir  = 'tmp/images/' + self.pdf_name + str(uuid.uuid1())
         os.system('mkdir -p {0}'.format (self.pdf_to_image_dir))
-        convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='',poppler_path=".\bin\poppler\bin")
+        convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')#,poppler_path=".\bin\poppler\bin")
         os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir))
         self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '/*.png'))
         self.number_of_digits = len(str(self.num_of_pages))
