@@ -33,7 +33,7 @@ class OCRlineRepositoriesv3:
         self.pdf_name = self.pdf_path.split('/')[-1].split('.')[0]
         self.pdf_to_image_dir  = 'tmp/images/' + self.pdf_name + str(uuid.uuid1())
         os.system('mkdir -p {0}'.format (self.pdf_to_image_dir))
-        convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='')
+        convert_from_path(self.pdf_path, output_folder=self.pdf_to_image_dir, fmt='jpeg', output_file='',poppler_path=".\bin\poppler\bin")
         os.system(' pdftohtml -s -c -p {0} {1}/c'.format(self.pdf_path , self.pdf_to_image_dir))
         self.num_of_pages = len(glob.glob(self.pdf_to_image_dir + '/*.png'))
         self.number_of_digits = len(str(self.num_of_pages))
@@ -137,8 +137,12 @@ class OCRlineRepositoriesv3:
         #cv2.imwrite( str(uuid.uuid1()) +'.png' ,sure_fg)
         return sure_fg.astype(np.uint8)
 
-    def sort_words(self,group, sorted_group=[], line_spacing=[], line=0):
+    def sort_words(self, group, sorted_group=None, line_spacing=None, line=0):
 
+        if line_spacing is None:
+            line_spacing = []
+        if sorted_group is None:
+            sorted_group = []
         semi_height = group.iloc[0]['height'].mean() / 2.0
         check_y = group.iloc[0]['top']
         same_line = group[abs(group['top'] - check_y) < semi_height]
@@ -155,8 +159,10 @@ class OCRlineRepositoriesv3:
 
         return sorted_group, line_spacing, line
 
-    def sort_contours(self,contours_df, sorted_contours=[]):
+    def sort_contours(self, contours_df, sorted_contours=None):
 
+        if sorted_contours is None:
+            sorted_contours = []
         check_y = contours_df.iloc[0]['top']
 
         same_line = contours_df[abs(contours_df['top'] - check_y) < self.line_spacing_median*0.5]
