@@ -40,9 +40,10 @@ class OCRlineRepositoriesv3:
 
     def pdf_language_detect(self):
         page_file         = self.pdf_to_image_dir + '/-' + self.page_num_correction (0) + '.jpg'
-        osd               =  pytesseract.image_to_osd (page_file)
-        language_script   =  osd.split('\nScript')[1][2:]
+
         try :
+            osd = pytesseract.image_to_osd(page_file)
+            language_script = osd.split('\nScript')[1][2:]
             self.pdf_language = self.pdf_language + '+' + self.language_map[language_script]
         except :
             pass
@@ -84,7 +85,7 @@ class OCRlineRepositoriesv3:
                 w = table ['w']
                 h = table ['h']
                 table_text.append(table)
-                print(x,y,w,h)
+                #print(x,y,w,h)
                 #page_image [int (y):int (y + h), int (x):int (x + w)] = 255
                 #print(table)
             return page_image ,table_text,lines
