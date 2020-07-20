@@ -144,7 +144,7 @@ class OCRlineRepositoriesv3:
             line_spacing = []
         if sorted_group is None:
             sorted_group = []
-        semi_height = group.iloc[0]['height'].mean() / 2.0
+        semi_height = group.iloc[0]['height'] #/ 2.0
         check_y = group.iloc[0]['top']
         same_line = group[abs(group['top'] - check_y) < semi_height]
         next_lines = group[abs(group['top'] - check_y) >= semi_height]
