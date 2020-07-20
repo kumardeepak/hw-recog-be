@@ -377,7 +377,7 @@ class OCRlineRepositoriesv3:
 
         if line_id == last_line:
             # Adding exception for last line of page
-            if (start_delta < 2 * self.median_height) & (end_delta < 3 * self.median_height):
+            if (start_delta < 3 * self.median_height) & (end_delta < 2 * self.median_height):
                 return 0
             else:
                 return 1
