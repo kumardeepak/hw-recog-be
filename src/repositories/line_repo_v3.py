@@ -233,9 +233,9 @@ class OCRlineRepositoriesv3:
             text_df['text']     = text_df['text'].astype(str)
             text_df['line']     = None
             text_df['line_key'] = text_df['block_num'].astype(str) + text_df['par_num'].astype(str) + text_df['line_num'].astype(str)
-            self.median_height      = text_df['height'].median()
+            self.median_height  = text_df['height'].median()
             # Removing noise
-            text_df            = text_df[text_df['height'] > (self.median_height / 2.0)]
+            text_df             = text_df[text_df['height'] > (self.median_height / 2.0)]
             text_df = text_df[text_df['text'] != ' ']
 
 
@@ -377,7 +377,7 @@ class OCRlineRepositoriesv3:
 
         if line_id == last_line:
             # Adding exception for last line of page
-            if (start_delta < 2 * self.median_height) & (end_delta < 2 * self.median_height):
+            if (start_delta < 2 * self.median_height) & (end_delta < 3 * self.median_height):
                 return 0
             else:
                 return 1

@@ -31,7 +31,9 @@ from repositories.line_repo_v3 import OCRlineRepositoriesv3
 #path_to_pdf = '/home/dhiraj/Documents/data/4603_2017_11_1503_19663_Judgement_15-Jan-2020.pdf'
 #path_to_pdf ='/home/dhiraj/Downloads/hin_pib_ayush_inter_06_may_2020.pdf'
 #path_to_pdf = '/home/dhiraj/Documents/data/downloaded.pdf'
-path_to_pdf = '/home/dhiraj/Downloads/20695_2010_8_1501_20635_Judgement_17-Feb-2020.pdf'
+#path_to_pdf = '/home/dhiraj/Downloads/20695_2010_8_1501_20635_Judgement_17-Feb-2020.pdf'
+path_to_pdf ='/home/dhiraj/Documents/data/12_2019_9_1503_21076_Judgement_02-Mar-2020.pdf'
+
 text = OCRlineRepositoriesv3(path_to_pdf)     
 
 output_dir = ''
